@@ -28,18 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridWeeklyView = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)DataGridWeeklyView).BeginInit();
             SuspendLayout();
+            // 
+            // DataGridWeeklyView
+            // 
+            DataGridWeeklyView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            DataGridWeeklyView.Dock = DockStyle.Fill;
+            DataGridWeeklyView.Location = new Point(0, 0);
+            DataGridWeeklyView.Name = "DataGridWeeklyView";
+            DataGridWeeklyView.RowHeadersWidth = 51;
+            DataGridWeeklyView.Size = new Size(1087, 519);
+            DataGridWeeklyView.TabIndex = 0;
             // 
             // FormWeeklyView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1087, 519);
+            Controls.Add(DataGridWeeklyView);
             Name = "FormWeeklyView";
             Text = "Weekly View";
+            Load += FormWeeklyView_Load;
+            ((System.ComponentModel.ISupportInitialize)DataGridWeeklyView).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
+
+        private DataGridView DataGridWeeklyView;
     }
 }

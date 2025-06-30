@@ -83,7 +83,6 @@ namespace HotelBookingSystem
             room.RoomType = RoomType.TripleRoom; 
             EnableSubmission();
         }
-
         
 
         private void RadioButtonResident_CheckedChanged(object sender, EventArgs e)
@@ -132,6 +131,10 @@ namespace HotelBookingSystem
         {
             booking.Guest = guest;
             booking.Room = room;
+
+            // Store the booking
+            BookingManager.AddBooking(booking);
+
             MessageBox.Show("New Booking has been Submitted", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }

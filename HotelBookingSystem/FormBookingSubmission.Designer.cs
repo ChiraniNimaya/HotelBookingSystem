@@ -206,9 +206,9 @@
             LabelNIC.AutoSize = true;
             LabelNIC.Location = new Point(71, 127);
             LabelNIC.Name = "LabelNIC";
-            LabelNIC.Size = new Size(43, 23);
+            LabelNIC.Size = new Size(114, 23);
             LabelNIC.TabIndex = 19;
-            LabelNIC.Text = "NIC:";
+            LabelNIC.Text = "NIC/Passport:";
             // 
             // LabelName
             // 

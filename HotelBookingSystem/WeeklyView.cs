@@ -16,5 +16,22 @@ namespace HotelBookingSystem
         {
             InitializeComponent();
         }
+
+        private void FormWeeklyView_Load(object sender, EventArgs e)
+        {
+            var weeklyBookings = BookingManager.GetBookingsForCurrentWeek().Select(b => new
+            {
+                BookingID = b.BookingId,
+                GuestName = b.Guest.Name,
+                NIC = b.Guest.NIC,
+                CheckIn = b.CheckInDate.ToShortDateString(),
+                CheckOut = b.CheckOutDate.ToShortDateString(),
+                RoomType = b.Room.RoomType.ToString(),
+                Price = b.TotalPrice
+            })
+            .ToList();
+
+            DataGridWeeklyView.DataSource = weeklyBookings;
+        }
     }
 }
