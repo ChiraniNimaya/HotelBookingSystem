@@ -6,9 +6,15 @@ using System.Threading.Tasks;
 
 namespace HotelBookingSystem
 {
+    internal enum RoomType
+    {
+        SingleRoom,
+        DoubleRoom,
+        TripleRoom
+    }
+    
     internal class Room
     {
         public Enum RoomType { get; set; }
-        public float pricePerDay { get; set; }
     }
 }

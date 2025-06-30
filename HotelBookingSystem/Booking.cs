@@ -8,12 +8,13 @@ namespace HotelBookingSystem
 {
     internal class Booking
     {
+        public Guest Guest { get; set; }
         public Guid BookingId { get; set; } = Guid.NewGuid();
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
-        public bool isRecurring { get; set; }
+        public bool IsRecurring { get; set; }
         public List<string> SpecialRequests { get; set; } = new();
-        public Room room { get; set; }
-        public float totalPrice { get; set; }
+        public Room Room { get; set; }
+        public float TotalPrice { get; set; }
     }
 }

@@ -15,6 +15,9 @@ namespace HotelBookingSystem
 {
     public partial class FormBookingSubmission : Form
     {
+        private Booking booking = new Booking();
+        private Room room = new Room();
+        private Guest guest = new Guest();
         public FormBookingSubmission()
         {
             InitializeComponent();
@@ -49,76 +52,88 @@ namespace HotelBookingSystem
         {
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
-        private void InputFields_TextChanged(object sender, EventArgs e)
-        {
-            EnableSubmission();
-        }
 
         private void CheckinDatePicker_ValueChanged(object sender, EventArgs e)
         {
             CheckoutDatePicker.MinDate = CheckinDatePicker.Value.AddDays(1);
+            booking.CheckInDate = CheckinDatePicker.Value.Date;
             EnableSubmission();
         }
 
         private void CheckoutDatePicker_ValueChanged(object sender, EventArgs e)
         {
+            booking.CheckOutDate = CheckoutDatePicker.Value.Date;
             EnableSubmission();
         }
 
         private void RoomSingle_CheckedChanged(object sender, EventArgs e)
         {
+            room.RoomType = RoomType.SingleRoom;
             EnableSubmission();
         }
 
         private void RoomDouble_CheckedChanged(object sender, EventArgs e)
         {
+            room.RoomType = RoomType.DoubleRoom; 
             EnableSubmission();
         }
 
         private void RoomTriple_CheckedChanged(object sender, EventArgs e)
         {
+            room.RoomType = RoomType.TripleRoom; 
             EnableSubmission();
         }
 
-        private void ButtonSubmit_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("New Booking has been Submitted", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.Close();
-        }
+        
 
         private void RadioButtonResident_CheckedChanged(object sender, EventArgs e)
         {
+            guest.IsResident = true;
             EnableSubmission();
         }
 
         private void RadioButtonNonResident_CheckedChanged(object sender, EventArgs e)
         {
+            guest.IsResident = false; 
             EnableSubmission();
         }
 
         private void TextBoxName_TextChanged(object sender, EventArgs e)
         {
+            guest.Name = TextBoxName.Text;
             EnableSubmission();
         }
 
         private void TextBoxNIC_TextChanged(object sender, EventArgs e)
         {
+            guest.NIC = TextBoxNIC.Text;
             EnableSubmission();
         }
 
         private void TextBoxAddress_TextChanged(object sender, EventArgs e)
         {
+            guest.Address = TextBoxAddress.Text;
             EnableSubmission();
         }
 
         private void TextBoxMobileNumber_TextChanged(object sender, EventArgs e)
         {
+            guest.MobileNumber = TextBoxMobileNumber.Text;
             EnableSubmission();
         }
 
         private void TextBoxEmail_TextChanged(object sender, EventArgs e)
         {
+            guest.Email = TextBoxEmail.Text;
             EnableSubmission();
+        }
+
+        private void ButtonSubmit_Click(object sender, EventArgs e)
+        {
+            booking.Guest = guest;
+            booking.Room = room;
+            MessageBox.Show("New Booking has been Submitted", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Close();
         }
     }
 }
