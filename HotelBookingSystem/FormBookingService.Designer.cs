@@ -31,6 +31,7 @@
             LabelWelcome = new Label();
             ButtonSubmit = new Button();
             ButtonRequest = new Button();
+            ButtonChatBot = new Button();
             SuspendLayout();
             // 
             // LabelWelcome
@@ -45,7 +46,7 @@
             // 
             // ButtonSubmit
             // 
-            ButtonSubmit.Location = new Point(283, 165);
+            ButtonSubmit.Location = new Point(283, 138);
             ButtonSubmit.Name = "ButtonSubmit";
             ButtonSubmit.Size = new Size(203, 41);
             ButtonSubmit.TabIndex = 1;
@@ -55,7 +56,7 @@
             // 
             // ButtonRequest
             // 
-            ButtonRequest.Location = new Point(283, 243);
+            ButtonRequest.Location = new Point(283, 219);
             ButtonRequest.Name = "ButtonRequest";
             ButtonRequest.Size = new Size(203, 38);
             ButtonRequest.TabIndex = 2;
@@ -63,11 +64,23 @@
             ButtonRequest.UseVisualStyleBackColor = true;
             ButtonRequest.Click += ButtonRequest_Click;
             // 
+            // ButtonChatBot
+            // 
+            ButtonChatBot.Font = new Font("Segoe UI", 10F);
+            ButtonChatBot.Location = new Point(307, 295);
+            ButtonChatBot.Name = "ButtonChatBot";
+            ButtonChatBot.Size = new Size(149, 40);
+            ButtonChatBot.TabIndex = 3;
+            ButtonChatBot.Text = "Open Chatbot";
+            ButtonChatBot.UseVisualStyleBackColor = true;
+            ButtonChatBot.Click += ButtonChatBot_Click;
+            // 
             // FormBookingService
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(ButtonChatBot);
             Controls.Add(ButtonRequest);
             Controls.Add(ButtonSubmit);
             Controls.Add(LabelWelcome);
@@ -82,5 +95,6 @@
         private Label LabelWelcome;
         private Button ButtonSubmit;
         private Button ButtonRequest;
+        private Button ButtonChatBot;
     }
 }

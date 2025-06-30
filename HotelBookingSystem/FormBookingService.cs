@@ -28,5 +28,11 @@ namespace HotelBookingSystem
             FormWeeklyView formWeeklyView = new FormWeeklyView();
             formWeeklyView.Show();
         }
+
+        private void ButtonChatBot_Click(object sender, EventArgs e)
+        {
+            FormChatBot formChatBot = new FormChatBot();
+            formChatBot.Show();
+        }
     }
 }

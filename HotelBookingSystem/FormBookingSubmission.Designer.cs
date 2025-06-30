@@ -34,7 +34,7 @@
             CheckoutDatePicker = new DateTimePicker();
             CheckBoxRecurring = new CheckBox();
             LabelSpecialRequests = new Label();
-            TextBoxSpecialRequests = new RichTextBox();
+            ListBoxSpecialRequests = new RichTextBox();
             LabelRoomType = new Label();
             RoomSingle = new RadioButton();
             RoomDouble = new RadioButton();
@@ -119,13 +119,13 @@
             LabelSpecialRequests.TabIndex = 10;
             LabelSpecialRequests.Text = "Special Requests :";
             // 
-            // TextBoxSpecialRequests
+            // ListBoxSpecialRequests
             // 
-            TextBoxSpecialRequests.Location = new Point(259, 213);
-            TextBoxSpecialRequests.Name = "TextBoxSpecialRequests";
-            TextBoxSpecialRequests.Size = new Size(311, 140);
-            TextBoxSpecialRequests.TabIndex = 11;
-            TextBoxSpecialRequests.Text = "";
+            ListBoxSpecialRequests.Location = new Point(259, 213);
+            ListBoxSpecialRequests.Name = "ListBoxSpecialRequests";
+            ListBoxSpecialRequests.Size = new Size(311, 140);
+            ListBoxSpecialRequests.TabIndex = 11;
+            ListBoxSpecialRequests.Text = "";
             // 
             // LabelRoomType
             // 
@@ -334,7 +334,7 @@
             GroupBoxBooking.Controls.Add(RoomDouble);
             GroupBoxBooking.Controls.Add(LabelSpecialRequests);
             GroupBoxBooking.Controls.Add(RoomSingle);
-            GroupBoxBooking.Controls.Add(TextBoxSpecialRequests);
+            GroupBoxBooking.Controls.Add(ListBoxSpecialRequests);
             GroupBoxBooking.Controls.Add(LabelRoomType);
             GroupBoxBooking.Font = new Font("Segoe UI", 10F);
             GroupBoxBooking.Location = new Point(754, 28);
@@ -382,7 +382,7 @@
         private DateTimePicker CheckoutDatePicker;
         private CheckBox CheckBoxRecurring;
         private Label LabelSpecialRequests;
-        private RichTextBox TextBoxSpecialRequests;
+        private RichTextBox ListBoxSpecialRequests;
         private Label LabelRoomType;
         private RadioButton RoomSingle;
         private RadioButton RoomDouble;

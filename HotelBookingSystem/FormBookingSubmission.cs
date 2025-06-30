@@ -27,6 +27,7 @@ namespace HotelBookingSystem
         {
             CheckinDatePicker.MinDate = DateTime.Now;
             ButtonSubmit.Enabled = false;
+            ButtonGenerateReceipt.Enabled = false;  
         }
         private void EnableSubmission()
         {
@@ -41,7 +42,8 @@ namespace HotelBookingSystem
                 IsValidMobile(TextBoxMobileNumber.Text) &&
                 IsValidEmail(TextBoxEmail.Text);
 
-            ButtonSubmit.Enabled = isDateRangeValid && isRoomSelected && isResidencySelected && areFieldsValid;
+            bool canButtonsEnable = isDateRangeValid && isRoomSelected && isResidencySelected && areFieldsValid;
+            ButtonSubmit.Enabled = ButtonGenerateReceipt.Enabled = canButtonsEnable;
         }
         private bool IsValidMobile(string mobile)
         {
@@ -129,6 +131,9 @@ namespace HotelBookingSystem
 
         private void ButtonSubmit_Click(object sender, EventArgs e)
         {
+            string specialRequests = string.Join(", ", ListBoxSpecialRequests.Text.Split('\n'));
+
+            booking.SpecialRequests = specialRequests;
             booking.Guest = guest;
             booking.Room = room;
 

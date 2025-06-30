@@ -27,11 +27,21 @@ namespace HotelBookingSystem
                 CheckIn = b.CheckInDate.ToShortDateString(),
                 CheckOut = b.CheckOutDate.ToShortDateString(),
                 RoomType = b.Room.RoomType.ToString(),
-                Price = b.TotalPrice
+                Price = b.TotalPrice,
+                SpecialRequests = string.Join(", ", b.SpecialRequests)
             })
             .ToList();
 
             DataGridWeeklyView.DataSource = weeklyBookings;
+
+            DataGridWeeklyView.Columns["BookingID"].HeaderText = "Booking ID";
+            DataGridWeeklyView.Columns["GuestName"].HeaderText = "Guest Name";
+            DataGridWeeklyView.Columns["NIC"].HeaderText = "NIC No.";
+            DataGridWeeklyView.Columns["CheckIn"].HeaderText = "Check-In Date";
+            DataGridWeeklyView.Columns["CheckOut"].HeaderText = "Check-Out Date";
+            DataGridWeeklyView.Columns["RoomType"].HeaderText = "Room Type";
+            DataGridWeeklyView.Columns["Price"].HeaderText = "Total Price";
+            DataGridWeeklyView.Columns["SpecialRequests"].HeaderText = "Special Requests";
         }
     }
 }

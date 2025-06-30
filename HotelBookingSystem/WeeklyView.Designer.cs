@@ -34,19 +34,23 @@
             // 
             // DataGridWeeklyView
             // 
+            DataGridWeeklyView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            DataGridWeeklyView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            DataGridWeeklyView.BackgroundColor = SystemColors.GradientActiveCaption;
+            DataGridWeeklyView.BorderStyle = BorderStyle.Fixed3D;
             DataGridWeeklyView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             DataGridWeeklyView.Dock = DockStyle.Fill;
             DataGridWeeklyView.Location = new Point(0, 0);
             DataGridWeeklyView.Name = "DataGridWeeklyView";
             DataGridWeeklyView.RowHeadersWidth = 51;
-            DataGridWeeklyView.Size = new Size(1087, 519);
+            DataGridWeeklyView.Size = new Size(1507, 519);
             DataGridWeeklyView.TabIndex = 0;
             // 
             // FormWeeklyView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1087, 519);
+            ClientSize = new Size(1507, 519);
             Controls.Add(DataGridWeeklyView);
             Name = "FormWeeklyView";
             Text = "Weekly View";
