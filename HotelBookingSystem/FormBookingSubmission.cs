@@ -15,9 +15,10 @@ namespace HotelBookingSystem
 {
     public partial class FormBookingSubmission : Form
     {
-        private Booking booking = new Booking();
         private Room room = new Room();
         private Guest guest = new Guest();
+        DateTime checkInDate, checkOutDate;
+        bool isRecurring;
         public FormBookingSubmission()
         {
             InitializeComponent();
@@ -27,7 +28,7 @@ namespace HotelBookingSystem
         {
             CheckinDatePicker.MinDate = DateTime.Now;
             ButtonSubmit.Enabled = false;
-            ButtonGenerateReceipt.Enabled = false;  
+            ButtonGenerateReceipt.Enabled = false;
         }
         private void EnableSubmission()
         {
@@ -58,13 +59,13 @@ namespace HotelBookingSystem
         private void CheckinDatePicker_ValueChanged(object sender, EventArgs e)
         {
             CheckoutDatePicker.MinDate = CheckinDatePicker.Value.AddDays(1);
-            booking.CheckInDate = CheckinDatePicker.Value.Date;
+            checkInDate = CheckinDatePicker.Value.Date;
             EnableSubmission();
         }
 
         private void CheckoutDatePicker_ValueChanged(object sender, EventArgs e)
         {
-            booking.CheckOutDate = CheckoutDatePicker.Value.Date;
+            checkOutDate = CheckoutDatePicker.Value.Date;
             EnableSubmission();
         }
 
@@ -76,16 +77,16 @@ namespace HotelBookingSystem
 
         private void RoomDouble_CheckedChanged(object sender, EventArgs e)
         {
-            room.RoomType = RoomType.DoubleRoom; 
+            room.RoomType = RoomType.DoubleRoom;
             EnableSubmission();
         }
 
         private void RoomTriple_CheckedChanged(object sender, EventArgs e)
         {
-            room.RoomType = RoomType.TripleRoom; 
+            room.RoomType = RoomType.TripleRoom;
             EnableSubmission();
         }
-        
+
 
         private void RadioButtonResident_CheckedChanged(object sender, EventArgs e)
         {
@@ -95,7 +96,7 @@ namespace HotelBookingSystem
 
         private void RadioButtonNonResident_CheckedChanged(object sender, EventArgs e)
         {
-            guest.IsResident = false; 
+            guest.IsResident = false;
             EnableSubmission();
         }
 
@@ -129,19 +130,25 @@ namespace HotelBookingSystem
             EnableSubmission();
         }
 
+        private void CheckBoxRecurring_CheckedChanged(object sender, EventArgs e)
+        {
+            isRecurring = true;
+            EnableSubmission();
+        }
+
         private void ButtonSubmit_Click(object sender, EventArgs e)
         {
             string specialRequests = string.Join(", ", ListBoxSpecialRequests.Text.Split('\n'));
 
-            booking.SpecialRequests = specialRequests;
-            booking.Guest = guest;
-            booking.Room = room;
+            Booking booking = new Booking(guest, checkInDate, checkOutDate, isRecurring, specialRequests, room);
 
             // Store the booking
             BookingManager.AddBooking(booking);
 
-            MessageBox.Show("New Booking has been Submitted", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"New Booking has been Submitted. Booking ID is {booking.BookingId}", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }
+
+        
     }
 }

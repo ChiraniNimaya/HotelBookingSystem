@@ -103,12 +103,13 @@
             // CheckBoxRecurring
             // 
             CheckBoxRecurring.AutoSize = true;
-            CheckBoxRecurring.Location = new Point(820, 802);
+            CheckBoxRecurring.Location = new Point(446, 375);
             CheckBoxRecurring.Name = "CheckBoxRecurring";
-            CheckBoxRecurring.Size = new Size(124, 24);
+            CheckBoxRecurring.Size = new Size(140, 27);
             CheckBoxRecurring.TabIndex = 9;
             CheckBoxRecurring.Text = "Recurring stay";
             CheckBoxRecurring.UseVisualStyleBackColor = true;
+            CheckBoxRecurring.CheckedChanged += CheckBoxRecurring_CheckedChanged;
             // 
             // LabelSpecialRequests
             // 
@@ -175,7 +176,7 @@
             // ButtonSubmit
             // 
             ButtonSubmit.Font = new Font("Segoe UI", 10F);
-            ButtonSubmit.Location = new Point(1262, 465);
+            ButtonSubmit.Location = new Point(1276, 494);
             ButtonSubmit.Name = "ButtonSubmit";
             ButtonSubmit.Size = new Size(115, 38);
             ButtonSubmit.TabIndex = 16;
@@ -317,9 +318,9 @@
             GroupBoxGuest.Controls.Add(TextBoxAddress);
             GroupBoxGuest.Controls.Add(TextBoxName);
             GroupBoxGuest.Font = new Font("Segoe UI", 10F);
-            GroupBoxGuest.Location = new Point(35, 28);
+            GroupBoxGuest.Location = new Point(49, 40);
             GroupBoxGuest.Name = "GroupBoxGuest";
-            GroupBoxGuest.Size = new Size(653, 400);
+            GroupBoxGuest.Size = new Size(653, 414);
             GroupBoxGuest.TabIndex = 31;
             GroupBoxGuest.TabStop = false;
             GroupBoxGuest.Text = "Enter the Guest Information:";
@@ -330,6 +331,7 @@
             GroupBoxBooking.Controls.Add(LabelCheckout);
             GroupBoxBooking.Controls.Add(CheckinDatePicker);
             GroupBoxBooking.Controls.Add(RoomTriple);
+            GroupBoxBooking.Controls.Add(CheckBoxRecurring);
             GroupBoxBooking.Controls.Add(CheckoutDatePicker);
             GroupBoxBooking.Controls.Add(RoomDouble);
             GroupBoxBooking.Controls.Add(LabelSpecialRequests);
@@ -337,9 +339,9 @@
             GroupBoxBooking.Controls.Add(ListBoxSpecialRequests);
             GroupBoxBooking.Controls.Add(LabelRoomType);
             GroupBoxBooking.Font = new Font("Segoe UI", 10F);
-            GroupBoxBooking.Location = new Point(754, 28);
+            GroupBoxBooking.Location = new Point(768, 40);
             GroupBoxBooking.Name = "GroupBoxBooking";
-            GroupBoxBooking.Size = new Size(623, 400);
+            GroupBoxBooking.Size = new Size(623, 423);
             GroupBoxBooking.TabIndex = 32;
             GroupBoxBooking.TabStop = false;
             GroupBoxBooking.Text = "Enter the Booking Details:";
@@ -347,7 +349,7 @@
             // ButtonGenerateReceipt
             // 
             ButtonGenerateReceipt.Font = new Font("Segoe UI", 10F);
-            ButtonGenerateReceipt.Location = new Point(754, 466);
+            ButtonGenerateReceipt.Location = new Point(768, 494);
             ButtonGenerateReceipt.Name = "ButtonGenerateReceipt";
             ButtonGenerateReceipt.Size = new Size(159, 38);
             ButtonGenerateReceipt.TabIndex = 33;
@@ -358,12 +360,11 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1459, 768);
+            ClientSize = new Size(1836, 558);
             Controls.Add(ButtonGenerateReceipt);
             Controls.Add(GroupBoxBooking);
             Controls.Add(GroupBoxGuest);
             Controls.Add(ButtonSubmit);
-            Controls.Add(CheckBoxRecurring);
             Name = "FormBookingSubmission";
             Text = "Booking Submission";
             Load += FormBookingSubmission_Load;
@@ -372,7 +373,6 @@
             GroupBoxBooking.ResumeLayout(false);
             GroupBoxBooking.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
