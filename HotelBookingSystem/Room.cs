@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace HotelBookingSystem
 {
-    internal enum RoomType
+    public enum RoomType
     {
-        SingleRoom,
-        DoubleRoom,
-        TripleRoom
+        Single,
+        Double,
+        Triple
     }
     
-    internal class Room
+    public class Room
     {
-        public Enum RoomType { get; set; }
+        public RoomType RoomType { get; set; }
     }
 }

@@ -69,5 +69,10 @@ namespace HotelBookingSystem
                 MessageBox.Show("No bookings found for the given NIC.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void ButtonClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

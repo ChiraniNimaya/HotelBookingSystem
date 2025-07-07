@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HotelBookingSystem
 {
-    internal class Guest
+    public class Guest
     {
         public string Name { get; set; }
         public string NIC { get; set; }

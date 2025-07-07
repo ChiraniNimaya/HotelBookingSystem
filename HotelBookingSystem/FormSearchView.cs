@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -47,12 +48,12 @@ namespace HotelBookingSystem
             if (results.Any())
             {
                 SetupDataGridView();
-                DataGridViewBookings.DataSource = new BindingList<Booking>(results);
+                var viewModelList = results.Select(b => new BookingViewModel(b)).ToList();
+                DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(viewModelList);
             }
             else
             {
                 MessageBox.Show("No bookings found for the given criteria.");
-                //DataGridViewBookings.Visible = false; 
             }
 
         }
@@ -63,25 +64,25 @@ namespace HotelBookingSystem
 
             DataGridViewBookings.AutoGenerateColumns = false;
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Booking ID", DataPropertyName = "BookingId" });
-            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Customer Name", DataPropertyName = "CustomerName" });
+            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Guest Name", DataPropertyName = "GuestName" });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "NIC", DataPropertyName = "NIC" });
-            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Check-In", DataPropertyName = "CheckInDate" });
-            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Check-Out", DataPropertyName = "CheckOutDate" });
+            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Check-In Date", DataPropertyName = "CheckInDate" });
+            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Check-Out Date", DataPropertyName = "CheckOutDate" });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Room Type", DataPropertyName = "RoomType" });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Recurring Stay?", DataPropertyName = "IsRecurring" });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Special Requests", DataPropertyName = "SpecialRequests" });
-            
+
 
             var editButton = new DataGridViewButtonColumn
             {
-                HeaderText = "Edit",
+                HeaderText = "Edit Booking",
                 Text = "Edit",
                 UseColumnTextForButtonValue = true
             };
 
             var deleteButton = new DataGridViewButtonColumn
             {
-                HeaderText = "Delete",
+                HeaderText = "Delete Booking",
                 Text = "Delete",
                 UseColumnTextForButtonValue = true
             };
@@ -94,7 +95,60 @@ namespace HotelBookingSystem
 
         private void DataGridViewBookings_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
-            throw new NotImplementedException();
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                var column = DataGridViewBookings.Columns[e.ColumnIndex];
+
+                // Get the booking for the clicked row
+                var viewModel = (BookingViewModel)DataGridViewBookings.Rows[e.RowIndex].DataBoundItem;
+                Booking selectedBooking = BookingManager.GetAllBookings().FirstOrDefault(b => b.BookingId == viewModel.BookingId);
+
+
+                // Handle Delete Booking button
+                if (column.HeaderText == "Delete Booking")
+                {
+                    var confirm = MessageBox.Show(
+                        $"Are you sure you want to delete booking ID {selectedBooking.BookingId}?",
+                        "Confirm Delete",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+
+                    if (confirm == DialogResult.Yes)
+                    {
+                        BookingManager.GetAllBookings().Remove(selectedBooking); // Remove from main list
+
+                        // Refresh DataGridView
+                        var updatedList = BookingManager.GetAllBookings()
+                            .Where(b =>
+                                (searchBookingId.HasValue && b.BookingId == searchBookingId.Value) ||
+                                (!string.IsNullOrWhiteSpace(searchNIC) && b.Guest.NIC.Equals(searchNIC, StringComparison.OrdinalIgnoreCase))
+                            )
+                            .ToList();
+
+                        DataGridViewBookings.DataSource = new BindingList<Booking>(updatedList);
+
+                        MessageBox.Show("Booking deleted successfully.");
+                    }
+                }
+                if (column.HeaderText == "Edit Booking")
+                {
+                    FormEditBooking formEditBooking = new FormEditBooking(selectedBooking);
+                    if (formEditBooking.ShowDialog() == DialogResult.OK)
+                    {
+                        var updatedList = BookingManager.GetAllBookings()
+                            .Where(b =>
+                                (searchBookingId.HasValue && b.BookingId == searchBookingId.Value) ||
+                                (!string.IsNullOrWhiteSpace(searchNIC) && b.Guest.NIC.Equals(searchNIC, StringComparison.OrdinalIgnoreCase))
+                            )
+                            .Select(b => new BookingViewModel(b))
+                            .ToList();
+
+                        DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(updatedList);
+                    }
+                }
+            }
+
         }
     }
 }

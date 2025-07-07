@@ -99,6 +99,7 @@
             ButtonClose.TabIndex = 6;
             ButtonClose.Text = "Close";
             ButtonClose.UseVisualStyleBackColor = true;
+            ButtonClose.Click += ButtonClose_Click;
             // 
             // FormSearchBooking
             // 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HotelBookingSystem
 {
-    internal class Booking
+    public class Booking
     {
         private static int s_lastBookingId = 0;
         public Guest Guest { get; set; }

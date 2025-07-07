@@ -71,19 +71,19 @@ namespace HotelBookingSystem
 
         private void RoomSingle_CheckedChanged(object sender, EventArgs e)
         {
-            room.RoomType = RoomType.SingleRoom;
+            room.RoomType = RoomType.Single;
             EnableSubmission();
         }
 
         private void RoomDouble_CheckedChanged(object sender, EventArgs e)
         {
-            room.RoomType = RoomType.DoubleRoom;
+            room.RoomType = RoomType.Double;
             EnableSubmission();
         }
 
         private void RoomTriple_CheckedChanged(object sender, EventArgs e)
         {
-            room.RoomType = RoomType.TripleRoom;
+            room.RoomType = RoomType.Triple;
             EnableSubmission();
         }
 
