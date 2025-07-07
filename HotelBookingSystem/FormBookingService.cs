@@ -34,5 +34,11 @@ namespace HotelBookingSystem
             FormChatBot formChatBot = new FormChatBot();
             formChatBot.Show();
         }
+
+        private void ButtonEditBookings_Click(object sender, EventArgs e)
+        {
+            FormSearchBooking formSearchBooking = new FormSearchBooking();
+            formSearchBooking.ShowDialog();
+        }
     }
 }
