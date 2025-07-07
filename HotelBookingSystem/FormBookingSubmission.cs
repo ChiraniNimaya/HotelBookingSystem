@@ -43,6 +43,14 @@ namespace HotelBookingSystem
                 IsValidMobile(TextBoxMobileNumber.Text) &&
                 IsValidEmail(TextBoxEmail.Text);
 
+            bool roomAvailable = true;
+
+            if (isDateRangeValid && isRoomSelected)
+            {
+                // check availability of selected room type
+                roomAvailable = BookingManager.IsRoomTypeAvailable(room.RoomType, CheckinDatePicker.Value.Date, CheckoutDatePicker.Value.Date);
+            }
+
             bool canButtonsEnable = isDateRangeValid && isRoomSelected && isResidencySelected && areFieldsValid;
             ButtonSubmit.Enabled = ButtonGenerateReceipt.Enabled = canButtonsEnable;
         }
@@ -138,6 +146,12 @@ namespace HotelBookingSystem
 
         private void ButtonSubmit_Click(object sender, EventArgs e)
         {
+            if (!BookingManager.IsRoomTypeAvailable(room.RoomType, checkInDate, checkOutDate))
+            {
+                MessageBox.Show($"All {room.RoomType} rooms are fully booked for the selected dates.", "Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             string specialRequests = string.Join(", ", ListBoxSpecialRequests.Text.Split('\n'));
 
             Booking booking = new Booking(guest, checkInDate, checkOutDate, isRecurring, specialRequests, room);

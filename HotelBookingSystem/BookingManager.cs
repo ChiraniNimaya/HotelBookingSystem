@@ -10,6 +10,14 @@ namespace HotelBookingSystem
     {
         public static List<Booking> Bookings { get; } = new List<Booking>();
 
+        public static readonly Dictionary<RoomType, int> TotalRoomsPerType = new()
+        {
+            { RoomType.Single, 5 },
+            { RoomType.Double, 7 },
+            { RoomType.Triple, 4 }
+        };
+
+
         public static void AddBooking(Booking booking)
         {
             Bookings.Add(booking);
@@ -32,6 +40,19 @@ namespace HotelBookingSystem
                 b.CheckInDate.Date >= weekStart && b.CheckInDate.Date <= weekEnd ||
                 b.CheckOutDate.Date >= weekStart && b.CheckOutDate.Date <= weekEnd
             );
+        }
+        public static bool IsRoomTypeAvailable(RoomType type, DateTime checkIn, DateTime checkOut)
+        {
+            int overlappingBookings = Bookings.Count(b =>
+                b.Room.RoomType == type &&
+                !(b.CheckOutDate <= checkIn || b.CheckInDate >= checkOut) 
+            );
+
+            return overlappingBookings < TotalRoomsPerType[type];
+        }
+        public static bool IsAnyRoomAvailable(DateTime checkIn, DateTime checkOut)
+        {
+            return TotalRoomsPerType.Keys.Any(type => IsRoomTypeAvailable(type, checkIn, checkOut));
         }
     }
 }
