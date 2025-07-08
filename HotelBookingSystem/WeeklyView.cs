@@ -26,7 +26,7 @@ namespace HotelBookingSystem
                 NIC = b.Guest.NIC,
                 CheckIn = b.CheckInDate.ToShortDateString(),
                 CheckOut = b.CheckOutDate.ToShortDateString(),
-                RoomType = b.Room.RoomType.ToString(),
+                Rooms = string.Join(", ", b.Rooms.Select(r => $"{r.RoomType} x{r.NumberOfRooms}")),
                 Price = b.TotalPrice,
                 SpecialRequests = string.Join(", ", b.SpecialRequests)
             })
@@ -39,8 +39,8 @@ namespace HotelBookingSystem
             DataGridWeeklyView.Columns["NIC"].HeaderText = "NIC No.";
             DataGridWeeklyView.Columns["CheckIn"].HeaderText = "Check-In Date";
             DataGridWeeklyView.Columns["CheckOut"].HeaderText = "Check-Out Date";
-            DataGridWeeklyView.Columns["RoomType"].HeaderText = "Room Type";
-            DataGridWeeklyView.Columns["Price"].HeaderText = "Total Price";
+            DataGridWeeklyView.Columns["Rooms"].HeaderText = "Room(s)";
+            DataGridWeeklyView.Columns["Price"].HeaderText = "Total Price (LKR)";
             DataGridWeeklyView.Columns["SpecialRequests"].HeaderText = "Special Requests";
         }
     }

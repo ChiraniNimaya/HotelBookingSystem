@@ -36,9 +36,6 @@
             LabelSpecialRequests = new Label();
             ListBoxSpecialRequests = new RichTextBox();
             LabelRoomType = new Label();
-            RoomSingle = new RadioButton();
-            RoomDouble = new RadioButton();
-            RoomTriple = new RadioButton();
             ButtonSubmit = new Button();
             LabelAddress = new Label();
             LabelMobileNumber = new Label();
@@ -55,15 +52,27 @@
             LabelResidency = new Label();
             GroupBoxGuest = new GroupBox();
             GroupBoxBooking = new GroupBox();
+            LinkLabelFamily = new LinkLabel();
+            LinkLabelSuite = new LinkLabel();
+            LinkLabelDeluxe = new LinkLabel();
+            LinkLabelStandard = new LinkLabel();
+            NumericUpDownFamily = new NumericUpDown();
+            NumericUpDownSuite = new NumericUpDown();
+            NumericUpDownDeluxe = new NumericUpDown();
+            NumericUpDownStandard = new NumericUpDown();
             ButtonGenerateReceipt = new Button();
             GroupBoxGuest.SuspendLayout();
             GroupBoxBooking.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownFamily).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownSuite).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownDeluxe).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownStandard).BeginInit();
             SuspendLayout();
             // 
             // LabelCheckin
             // 
             LabelCheckin.AutoSize = true;
-            LabelCheckin.Location = new Point(70, 73);
+            LabelCheckin.Location = new Point(67, 57);
             LabelCheckin.Name = "LabelCheckin";
             LabelCheckin.Size = new Size(127, 23);
             LabelCheckin.TabIndex = 1;
@@ -72,7 +81,7 @@
             // LabelCheckout
             // 
             LabelCheckout.AutoSize = true;
-            LabelCheckout.Location = new Point(70, 120);
+            LabelCheckout.Location = new Point(67, 104);
             LabelCheckout.Name = "LabelCheckout";
             LabelCheckout.Size = new Size(139, 23);
             LabelCheckout.TabIndex = 3;
@@ -80,7 +89,7 @@
             // 
             // CheckinDatePicker
             // 
-            CheckinDatePicker.Location = new Point(259, 73);
+            CheckinDatePicker.Location = new Point(256, 57);
             CheckinDatePicker.MaxDate = new DateTime(2030, 12, 31, 0, 0, 0, 0);
             CheckinDatePicker.MinDate = new DateTime(2025, 6, 25, 0, 0, 0, 0);
             CheckinDatePicker.Name = "CheckinDatePicker";
@@ -91,7 +100,7 @@
             // 
             // CheckoutDatePicker
             // 
-            CheckoutDatePicker.Location = new Point(259, 115);
+            CheckoutDatePicker.Location = new Point(256, 99);
             CheckoutDatePicker.MaxDate = new DateTime(2030, 12, 31, 0, 0, 0, 0);
             CheckoutDatePicker.MinDate = new DateTime(2025, 6, 25, 0, 0, 0, 0);
             CheckoutDatePicker.Name = "CheckoutDatePicker";
@@ -103,7 +112,7 @@
             // CheckBoxRecurring
             // 
             CheckBoxRecurring.AutoSize = true;
-            CheckBoxRecurring.Location = new Point(446, 375);
+            CheckBoxRecurring.Location = new Point(447, 454);
             CheckBoxRecurring.Name = "CheckBoxRecurring";
             CheckBoxRecurring.Size = new Size(140, 27);
             CheckBoxRecurring.TabIndex = 9;
@@ -114,7 +123,7 @@
             // LabelSpecialRequests
             // 
             LabelSpecialRequests.AutoSize = true;
-            LabelSpecialRequests.Location = new Point(70, 213);
+            LabelSpecialRequests.Location = new Point(70, 311);
             LabelSpecialRequests.Name = "LabelSpecialRequests";
             LabelSpecialRequests.Size = new Size(145, 23);
             LabelSpecialRequests.TabIndex = 10;
@@ -122,7 +131,7 @@
             // 
             // ListBoxSpecialRequests
             // 
-            ListBoxSpecialRequests.Location = new Point(259, 213);
+            ListBoxSpecialRequests.Location = new Point(276, 308);
             ListBoxSpecialRequests.Name = "ListBoxSpecialRequests";
             ListBoxSpecialRequests.Size = new Size(311, 140);
             ListBoxSpecialRequests.TabIndex = 11;
@@ -131,52 +140,16 @@
             // LabelRoomType
             // 
             LabelRoomType.AutoSize = true;
-            LabelRoomType.Location = new Point(70, 170);
+            LabelRoomType.Location = new Point(72, 165);
             LabelRoomType.Name = "LabelRoomType";
             LabelRoomType.Size = new Size(104, 23);
             LabelRoomType.TabIndex = 12;
             LabelRoomType.Text = "Room Type :";
             // 
-            // RoomSingle
-            // 
-            RoomSingle.AutoSize = true;
-            RoomSingle.Location = new Point(259, 170);
-            RoomSingle.Name = "RoomSingle";
-            RoomSingle.Size = new Size(77, 27);
-            RoomSingle.TabIndex = 13;
-            RoomSingle.TabStop = true;
-            RoomSingle.Text = "Single";
-            RoomSingle.UseVisualStyleBackColor = true;
-            RoomSingle.CheckedChanged += RoomSingle_CheckedChanged;
-            // 
-            // RoomDouble
-            // 
-            RoomDouble.AutoSize = true;
-            RoomDouble.Location = new Point(357, 170);
-            RoomDouble.Name = "RoomDouble";
-            RoomDouble.Size = new Size(86, 27);
-            RoomDouble.TabIndex = 14;
-            RoomDouble.TabStop = true;
-            RoomDouble.Text = "Double";
-            RoomDouble.UseVisualStyleBackColor = true;
-            RoomDouble.CheckedChanged += RoomDouble_CheckedChanged;
-            // 
-            // RoomTriple
-            // 
-            RoomTriple.AutoSize = true;
-            RoomTriple.Location = new Point(471, 170);
-            RoomTriple.Name = "RoomTriple";
-            RoomTriple.Size = new Size(72, 27);
-            RoomTriple.TabIndex = 15;
-            RoomTriple.TabStop = true;
-            RoomTriple.Text = "Triple";
-            RoomTriple.UseVisualStyleBackColor = true;
-            RoomTriple.CheckedChanged += RoomTriple_CheckedChanged;
-            // 
             // ButtonSubmit
             // 
             ButtonSubmit.Font = new Font("Segoe UI", 10F);
-            ButtonSubmit.Location = new Point(1276, 494);
+            ButtonSubmit.Location = new Point(1259, 584);
             ButtonSubmit.Name = "ButtonSubmit";
             ButtonSubmit.Size = new Size(115, 38);
             ButtonSubmit.TabIndex = 16;
@@ -327,29 +300,114 @@
             // 
             // GroupBoxBooking
             // 
+            GroupBoxBooking.Controls.Add(LinkLabelFamily);
+            GroupBoxBooking.Controls.Add(LinkLabelSuite);
+            GroupBoxBooking.Controls.Add(LinkLabelDeluxe);
+            GroupBoxBooking.Controls.Add(LinkLabelStandard);
+            GroupBoxBooking.Controls.Add(NumericUpDownFamily);
+            GroupBoxBooking.Controls.Add(NumericUpDownSuite);
+            GroupBoxBooking.Controls.Add(NumericUpDownDeluxe);
+            GroupBoxBooking.Controls.Add(NumericUpDownStandard);
             GroupBoxBooking.Controls.Add(LabelCheckin);
             GroupBoxBooking.Controls.Add(LabelCheckout);
             GroupBoxBooking.Controls.Add(CheckinDatePicker);
-            GroupBoxBooking.Controls.Add(RoomTriple);
             GroupBoxBooking.Controls.Add(CheckBoxRecurring);
             GroupBoxBooking.Controls.Add(CheckoutDatePicker);
-            GroupBoxBooking.Controls.Add(RoomDouble);
             GroupBoxBooking.Controls.Add(LabelSpecialRequests);
-            GroupBoxBooking.Controls.Add(RoomSingle);
             GroupBoxBooking.Controls.Add(ListBoxSpecialRequests);
             GroupBoxBooking.Controls.Add(LabelRoomType);
             GroupBoxBooking.Font = new Font("Segoe UI", 10F);
             GroupBoxBooking.Location = new Point(768, 40);
             GroupBoxBooking.Name = "GroupBoxBooking";
-            GroupBoxBooking.Size = new Size(623, 423);
+            GroupBoxBooking.Size = new Size(623, 512);
             GroupBoxBooking.TabIndex = 32;
             GroupBoxBooking.TabStop = false;
             GroupBoxBooking.Text = "Enter the Booking Details:";
             // 
+            // LinkLabelFamily
+            // 
+            LinkLabelFamily.AutoSize = true;
+            LinkLabelFamily.Location = new Point(421, 220);
+            LinkLabelFamily.Name = "LinkLabelFamily";
+            LinkLabelFamily.Size = new Size(57, 23);
+            LinkLabelFamily.TabIndex = 25;
+            LinkLabelFamily.TabStop = true;
+            LinkLabelFamily.Text = "Family";
+            LinkLabelFamily.LinkClicked += LinkLabelFamily_LinkClicked;
+            // 
+            // LinkLabelSuite
+            // 
+            LinkLabelSuite.AutoSize = true;
+            LinkLabelSuite.Location = new Point(421, 173);
+            LinkLabelSuite.Name = "LinkLabelSuite";
+            LinkLabelSuite.Size = new Size(48, 23);
+            LinkLabelSuite.TabIndex = 24;
+            LinkLabelSuite.TabStop = true;
+            LinkLabelSuite.Text = "Suite";
+            LinkLabelSuite.LinkClicked += LinkLabelSuite_LinkClicked;
+            // 
+            // LinkLabelDeluxe
+            // 
+            LinkLabelDeluxe.AutoSize = true;
+            LinkLabelDeluxe.Location = new Point(237, 220);
+            LinkLabelDeluxe.Name = "LinkLabelDeluxe";
+            LinkLabelDeluxe.Size = new Size(62, 23);
+            LinkLabelDeluxe.TabIndex = 23;
+            LinkLabelDeluxe.TabStop = true;
+            LinkLabelDeluxe.Text = "Deluxe";
+            LinkLabelDeluxe.LinkClicked += LinkLabelDeluxe_LinkClicked;
+            // 
+            // LinkLabelStandard
+            // 
+            LinkLabelStandard.AutoSize = true;
+            LinkLabelStandard.Location = new Point(237, 173);
+            LinkLabelStandard.Name = "LinkLabelStandard";
+            LinkLabelStandard.Size = new Size(78, 23);
+            LinkLabelStandard.TabIndex = 22;
+            LinkLabelStandard.TabStop = true;
+            LinkLabelStandard.Text = "Standard";
+            LinkLabelStandard.LinkClicked += LinkLabelStandard_LinkClicked;
+            // 
+            // NumericUpDownFamily
+            // 
+            NumericUpDownFamily.Location = new Point(491, 215);
+            NumericUpDownFamily.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
+            NumericUpDownFamily.Name = "NumericUpDownFamily";
+            NumericUpDownFamily.Size = new Size(59, 30);
+            NumericUpDownFamily.TabIndex = 21;
+            NumericUpDownFamily.ValueChanged += NumericUpDownFamily_ValueChanged;
+            // 
+            // NumericUpDownSuite
+            // 
+            NumericUpDownSuite.Location = new Point(491, 170);
+            NumericUpDownSuite.Maximum = new decimal(new int[] { 4, 0, 0, 0 });
+            NumericUpDownSuite.Name = "NumericUpDownSuite";
+            NumericUpDownSuite.Size = new Size(59, 30);
+            NumericUpDownSuite.TabIndex = 20;
+            NumericUpDownSuite.ValueChanged += NumericUpDownSuite_ValueChanged;
+            // 
+            // NumericUpDownDeluxe
+            // 
+            NumericUpDownDeluxe.Location = new Point(321, 215);
+            NumericUpDownDeluxe.Maximum = new decimal(new int[] { 7, 0, 0, 0 });
+            NumericUpDownDeluxe.Name = "NumericUpDownDeluxe";
+            NumericUpDownDeluxe.Size = new Size(59, 30);
+            NumericUpDownDeluxe.TabIndex = 19;
+            NumericUpDownDeluxe.ValueChanged += NumericUpDownDeluxe_ValueChanged;
+            // 
+            // NumericUpDownStandard
+            // 
+            NumericUpDownStandard.Location = new Point(321, 170);
+            NumericUpDownStandard.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
+            NumericUpDownStandard.Name = "NumericUpDownStandard";
+            NumericUpDownStandard.Size = new Size(59, 30);
+            NumericUpDownStandard.TabIndex = 18;
+            NumericUpDownStandard.ValueChanged += NumericUpDownStandard_ValueChanged;
+            // 
             // ButtonGenerateReceipt
             // 
             ButtonGenerateReceipt.Font = new Font("Segoe UI", 10F);
-            ButtonGenerateReceipt.Location = new Point(768, 494);
+            ButtonGenerateReceipt.Location = new Point(768, 598);
             ButtonGenerateReceipt.Name = "ButtonGenerateReceipt";
             ButtonGenerateReceipt.Size = new Size(159, 38);
             ButtonGenerateReceipt.TabIndex = 33;
@@ -360,7 +418,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1836, 558);
+            ClientSize = new Size(1836, 668);
             Controls.Add(ButtonGenerateReceipt);
             Controls.Add(GroupBoxBooking);
             Controls.Add(GroupBoxGuest);
@@ -372,6 +430,10 @@
             GroupBoxGuest.PerformLayout();
             GroupBoxBooking.ResumeLayout(false);
             GroupBoxBooking.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownFamily).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownSuite).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownDeluxe).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownStandard).EndInit();
             ResumeLayout(false);
         }
 
@@ -384,9 +446,6 @@
         private Label LabelSpecialRequests;
         private RichTextBox ListBoxSpecialRequests;
         private Label LabelRoomType;
-        private RadioButton RoomSingle;
-        private RadioButton RoomDouble;
-        private RadioButton RoomTriple;
         private Button ButtonSubmit;
         private Label LabelAddress;
         private Label LabelMobileNumber;
@@ -404,5 +463,13 @@
         private GroupBox GroupBoxGuest;
         private GroupBox GroupBoxBooking;
         private Button ButtonGenerateReceipt;
+        private NumericUpDown NumericUpDownFamily;
+        private NumericUpDown NumericUpDownSuite;
+        private NumericUpDown NumericUpDownDeluxe;
+        private NumericUpDown NumericUpDownStandard;
+        private LinkLabel LinkLabelFamily;
+        private LinkLabel LinkLabelSuite;
+        private LinkLabel LinkLabelDeluxe;
+        private LinkLabel LinkLabelStandard;
     }
 }

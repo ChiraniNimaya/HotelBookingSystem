@@ -8,13 +8,15 @@ namespace HotelBookingSystem
 {
     public enum RoomType
     {
-        Single,
-        Double,
-        Triple
+        Standard,
+        Deluxe,
+        Suite,
+        Family
     }
     
     public class Room
     {
         public RoomType RoomType { get; set; }
+        public int NumberOfRooms { get; set; } = 0;
     }
 }

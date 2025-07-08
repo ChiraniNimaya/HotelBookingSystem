@@ -15,10 +15,10 @@ namespace HotelBookingSystem
         public DateTime CheckOutDate { get; set; }
         public bool IsRecurring { get; set; }
         public string SpecialRequests { get; set; }
-        public Room Room { get; set; }
+        public List<Room> Rooms { get; } = new List<Room>();
         public float TotalPrice { get; set; }
 
-        public Booking(Guest guest, DateTime checkIn, DateTime checkOut, bool isRecurring, string specialRequests, Room room)
+        public Booking(Guest guest, DateTime checkIn, DateTime checkOut, bool isRecurring, string specialRequests, List<Room> rooms)
         {
             BookingId = ++s_lastBookingId; // Auto-incrementing ID
             Guest = guest;
@@ -26,7 +26,7 @@ namespace HotelBookingSystem
             CheckOutDate = checkOut;
             IsRecurring = isRecurring;
             SpecialRequests = specialRequests;
-            Room = room;
+            Rooms = rooms;
         }
     }
 }

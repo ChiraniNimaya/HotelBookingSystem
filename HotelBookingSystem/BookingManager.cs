@@ -12,9 +12,10 @@ namespace HotelBookingSystem
 
         public static readonly Dictionary<RoomType, int> TotalRoomsPerType = new()
         {
-            { RoomType.Single, 5 },
-            { RoomType.Double, 7 },
-            { RoomType.Triple, 4 }
+            { RoomType.Standard, 1 },
+            { RoomType.Deluxe, 7 },
+            { RoomType.Suite, 4 },
+            { RoomType.Family, 5 }
         };
 
 
@@ -41,18 +42,38 @@ namespace HotelBookingSystem
                 b.CheckOutDate.Date >= weekStart && b.CheckOutDate.Date <= weekEnd
             );
         }
-        public static bool IsRoomTypeAvailable(RoomType type, DateTime checkIn, DateTime checkOut)
-        {
-            int overlappingBookings = Bookings.Count(b =>
-                b.Room.RoomType == type &&
-                !(b.CheckOutDate <= checkIn || b.CheckInDate >= checkOut) 
-            );
 
-            return overlappingBookings < TotalRoomsPerType[type];
-        }
-        public static bool IsAnyRoomAvailable(DateTime checkIn, DateTime checkOut)
+        public static bool AreRoomsAvailable(List<Room> requestedRooms, DateTime checkIn, DateTime checkOut, int? excludeBookingId = null)
         {
-            return TotalRoomsPerType.Keys.Any(type => IsRoomTypeAvailable(type, checkIn, checkOut));
+            // Clone room inventory
+            Dictionary<RoomType, int> availableRooms = new(TotalRoomsPerType);
+
+            var overlappingBookings = GetAllBookings()
+                .Where(b =>
+                    !(b.CheckOutDate <= checkIn || b.CheckInDate >= checkOut) &&
+                    (!excludeBookingId.HasValue || b.BookingId != excludeBookingId.Value)
+                );
+
+            // Subtract existing bookings from available stock
+            foreach (var booking in overlappingBookings)
+            {
+                foreach (var room in booking.Rooms)
+                {
+                    if (availableRooms.ContainsKey(room.RoomType))
+                        availableRooms[room.RoomType] -= room.NumberOfRooms;
+                }
+            }
+
+            // Check if all requested rooms are available
+            foreach (var request in requestedRooms)
+            {
+                if (!availableRooms.ContainsKey(request.RoomType) || availableRooms[request.RoomType] < request.NumberOfRooms)
+                    return false;
+            }
+
+            return true;
         }
+
+
     }
 }

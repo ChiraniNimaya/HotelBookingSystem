@@ -46,13 +46,24 @@
             TextBoxEmail = new TextBox();
             TextBoxBookingId = new TextBox();
             LabelSpecialRequests = new Label();
-            ComboBoxRoomType = new ComboBox();
             DateTimePickerCheckin = new DateTimePicker();
             DateTimePickerCheckout = new DateTimePicker();
             ButtonSave = new Button();
             CheckBoxRecurring = new CheckBox();
             CheckBoxResident = new CheckBox();
             TextBoxSpecialRequests = new TextBox();
+            LabelStandard = new Label();
+            LabelDeluxe = new Label();
+            LabelSuite = new Label();
+            LabelFamily = new Label();
+            NumericUpDownStandard = new NumericUpDown();
+            NumericUpDownDeluxe = new NumericUpDown();
+            NumericUpDownSuite = new NumericUpDown();
+            NumericUpDownFamily = new NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownStandard).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownDeluxe).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownSuite).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownFamily).BeginInit();
             SuspendLayout();
             // 
             // LabelGuestInfo
@@ -201,22 +212,11 @@
             // LabelSpecialRequests
             // 
             LabelSpecialRequests.AutoSize = true;
-            LabelSpecialRequests.Location = new Point(738, 282);
+            LabelSpecialRequests.Location = new Point(738, 342);
             LabelSpecialRequests.Name = "LabelSpecialRequests";
             LabelSpecialRequests.Size = new Size(127, 20);
             LabelSpecialRequests.TabIndex = 18;
             LabelSpecialRequests.Text = "Special Requests :";
-            // 
-            // ComboBoxRoomType
-            // 
-            ComboBoxRoomType.FormattingEnabled = true;
-            ComboBoxRoomType.ImeMode = ImeMode.On;
-            ComboBoxRoomType.Items.AddRange(new object[] { "Single", "Double", "Triple" });
-            ComboBoxRoomType.Location = new Point(933, 223);
-            ComboBoxRoomType.MaxDropDownItems = 2;
-            ComboBoxRoomType.Name = "ComboBoxRoomType";
-            ComboBoxRoomType.Size = new Size(151, 28);
-            ComboBoxRoomType.TabIndex = 23;
             // 
             // DateTimePickerCheckin
             // 
@@ -235,7 +235,7 @@
             // 
             // ButtonSave
             // 
-            ButtonSave.Location = new Point(1118, 512);
+            ButtonSave.Location = new Point(1118, 428);
             ButtonSave.Name = "ButtonSave";
             ButtonSave.Size = new Size(125, 48);
             ButtonSave.TabIndex = 26;
@@ -246,7 +246,7 @@
             // CheckBoxRecurring
             // 
             CheckBoxRecurring.AutoSize = true;
-            CheckBoxRecurring.Location = new Point(1057, 404);
+            CheckBoxRecurring.Location = new Point(1100, 385);
             CheckBoxRecurring.Name = "CheckBoxRecurring";
             CheckBoxRecurring.Size = new Size(126, 24);
             CheckBoxRecurring.TabIndex = 27;
@@ -265,23 +265,94 @@
             // 
             // TextBoxSpecialRequests
             // 
-            TextBoxSpecialRequests.Location = new Point(933, 282);
+            TextBoxSpecialRequests.Location = new Point(933, 339);
             TextBoxSpecialRequests.Name = "TextBoxSpecialRequests";
             TextBoxSpecialRequests.Size = new Size(310, 27);
             TextBoxSpecialRequests.TabIndex = 29;
+            // 
+            // LabelStandard
+            // 
+            LabelStandard.AutoSize = true;
+            LabelStandard.Location = new Point(933, 238);
+            LabelStandard.Name = "LabelStandard";
+            LabelStandard.Size = new Size(69, 20);
+            LabelStandard.TabIndex = 30;
+            LabelStandard.Text = "Standard";
+            // 
+            // LabelDeluxe
+            // 
+            LabelDeluxe.AutoSize = true;
+            LabelDeluxe.Location = new Point(933, 288);
+            LabelDeluxe.Name = "LabelDeluxe";
+            LabelDeluxe.Size = new Size(55, 20);
+            LabelDeluxe.TabIndex = 31;
+            LabelDeluxe.Text = "Deluxe";
+            // 
+            // LabelSuite
+            // 
+            LabelSuite.AutoSize = true;
+            LabelSuite.Location = new Point(1118, 238);
+            LabelSuite.Name = "LabelSuite";
+            LabelSuite.Size = new Size(42, 20);
+            LabelSuite.TabIndex = 32;
+            LabelSuite.Text = "Suite";
+            // 
+            // LabelFamily
+            // 
+            LabelFamily.AutoSize = true;
+            LabelFamily.Location = new Point(1109, 285);
+            LabelFamily.Name = "LabelFamily";
+            LabelFamily.Size = new Size(51, 20);
+            LabelFamily.TabIndex = 33;
+            LabelFamily.Text = "Family";
+            // 
+            // NumericUpDownStandard
+            // 
+            NumericUpDownStandard.Location = new Point(1008, 236);
+            NumericUpDownStandard.Name = "NumericUpDownStandard";
+            NumericUpDownStandard.Size = new Size(59, 27);
+            NumericUpDownStandard.TabIndex = 34;
+            // 
+            // NumericUpDownDeluxe
+            // 
+            NumericUpDownDeluxe.Location = new Point(1008, 283);
+            NumericUpDownDeluxe.Name = "NumericUpDownDeluxe";
+            NumericUpDownDeluxe.Size = new Size(59, 27);
+            NumericUpDownDeluxe.TabIndex = 35;
+            // 
+            // NumericUpDownSuite
+            // 
+            NumericUpDownSuite.Location = new Point(1167, 236);
+            NumericUpDownSuite.Name = "NumericUpDownSuite";
+            NumericUpDownSuite.Size = new Size(59, 27);
+            NumericUpDownSuite.TabIndex = 36;
+            // 
+            // NumericUpDownFamily
+            // 
+            NumericUpDownFamily.Location = new Point(1167, 281);
+            NumericUpDownFamily.Name = "NumericUpDownFamily";
+            NumericUpDownFamily.Size = new Size(59, 27);
+            NumericUpDownFamily.TabIndex = 37;
             // 
             // FormEditBooking
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1401, 627);
+            Controls.Add(NumericUpDownFamily);
+            Controls.Add(NumericUpDownSuite);
+            Controls.Add(NumericUpDownDeluxe);
+            Controls.Add(NumericUpDownStandard);
+            Controls.Add(LabelFamily);
+            Controls.Add(LabelSuite);
+            Controls.Add(LabelDeluxe);
+            Controls.Add(LabelStandard);
             Controls.Add(TextBoxSpecialRequests);
             Controls.Add(CheckBoxResident);
             Controls.Add(CheckBoxRecurring);
             Controls.Add(ButtonSave);
             Controls.Add(DateTimePickerCheckout);
             Controls.Add(DateTimePickerCheckin);
-            Controls.Add(ComboBoxRoomType);
             Controls.Add(LabelSpecialRequests);
             Controls.Add(TextBoxBookingId);
             Controls.Add(TextBoxEmail);
@@ -303,6 +374,10 @@
             Name = "FormEditBooking";
             Text = "FormEditBooking";
             Load += FormEditBooking_Load;
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownStandard).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownDeluxe).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownSuite).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDownFamily).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -327,12 +402,19 @@
         private TextBox TextBoxEmail;
         private TextBox TextBoxBookingId;
         private Label LabelSpecialRequests;
-        private ComboBox ComboBoxRoomType;
         private DateTimePicker DateTimePickerCheckin;
         private DateTimePicker DateTimePickerCheckout;
         private Button ButtonSave;
         private CheckBox CheckBoxRecurring;
         private CheckBox CheckBoxResident;
         private TextBox TextBoxSpecialRequests;
+        private Label LabelStandard;
+        private Label LabelDeluxe;
+        private Label LabelSuite;
+        private Label LabelFamily;
+        private NumericUpDown NumericUpDownStandard;
+        private NumericUpDown NumericUpDownDeluxe;
+        private NumericUpDown NumericUpDownSuite;
+        private NumericUpDown NumericUpDownFamily;
     }
 }

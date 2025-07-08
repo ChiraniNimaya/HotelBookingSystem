@@ -22,22 +22,44 @@ namespace HotelBookingSystem
 
         private void FormEditBooking_Load(object sender, EventArgs e)
         {
-            ComboBoxRoomType.DataSource = Enum.GetValues(typeof(RoomType));
-
-            TextBoxBookingId.Text = bookingToEdit.BookingId.ToString();
+            // Guest details
             TextBoxGuestName.Text = bookingToEdit.Guest.Name;
             TextBoxNIC.Text = bookingToEdit.Guest.NIC;
             TextBoxAddress.Text = bookingToEdit.Guest.Address;
             TextBoxMobileNumber.Text = bookingToEdit.Guest.MobileNumber;
             TextBoxEmail.Text = bookingToEdit.Guest.Email;
             CheckBoxResident.Checked = bookingToEdit.Guest.IsResident;
+
+            //Dates
             DateTimePickerCheckin.Value = bookingToEdit.CheckInDate;
             DateTimePickerCheckout.Value = bookingToEdit.CheckOutDate;
-            ComboBoxRoomType.SelectedItem = bookingToEdit.Room.RoomType;
+
+            //Booking details
+            TextBoxBookingId.Text = bookingToEdit.BookingId.ToString();
             CheckBoxRecurring.Checked = bookingToEdit.IsRecurring;
             TextBoxSpecialRequests.Text = bookingToEdit.SpecialRequests;
 
             TextBoxBookingId.ReadOnly = true;
+
+            // Room selection: assign values to numeric counters
+            foreach (var room in bookingToEdit.Rooms)
+            {
+                switch (room.RoomType)
+                {
+                    case RoomType.Standard:
+                        NumericUpDownStandard.Value = room.NumberOfRooms;
+                        break;
+                    case RoomType.Deluxe:
+                        NumericUpDownDeluxe.Value = room.NumberOfRooms;
+                        break;
+                    case RoomType.Suite:
+                        NumericUpDownSuite.Value = room.NumberOfRooms;
+                        break;
+                    case RoomType.Family:
+                        NumericUpDownFamily.Value = room.NumberOfRooms;
+                        break;
+                }
+            }
         }
 
         private void DateTimePickerCheckin_ValueChanged(object sender, EventArgs e)
@@ -52,6 +74,39 @@ namespace HotelBookingSystem
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
+            // Gather updated room selections
+            var updatedRooms = new List<Room>();
+            if (NumericUpDownStandard.Value > 0)
+                updatedRooms.Add(new Room { RoomType = RoomType.Standard, NumberOfRooms = (int)NumericUpDownStandard.Value });
+            if (NumericUpDownDeluxe.Value > 0)
+                updatedRooms.Add(new Room { RoomType = RoomType.Deluxe, NumberOfRooms = (int)NumericUpDownDeluxe.Value });
+            if (NumericUpDownSuite.Value > 0)
+                updatedRooms.Add(new Room { RoomType = RoomType.Suite, NumberOfRooms = (int)NumericUpDownSuite.Value });
+            if (NumericUpDownFamily.Value > 0)
+                updatedRooms.Add(new Room { RoomType = RoomType.Family, NumberOfRooms = (int)NumericUpDownFamily.Value });
+
+            // Check that at least one room type is selected
+            if (updatedRooms.Count == 0)
+            {
+                MessageBox.Show("Please select at least one room type with quantity greater than zero.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            
+            // Check availability using BookingManager
+            bool roomsAvailable = BookingManager.AreRoomsAvailable(
+                updatedRooms,
+                DateTimePickerCheckin.Value,
+                DateTimePickerCheckout.Value,
+                excludeBookingId: bookingToEdit.BookingId
+            );
+
+            if (!roomsAvailable)
+            {
+                MessageBox.Show("The selected rooms are not available for the given date range.", "Room Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            
+            // Update guest details
             bookingToEdit.Guest.Name = TextBoxGuestName.Text.ToString();
             bookingToEdit.Guest.NIC = TextBoxNIC.Text;
             bookingToEdit.Guest.Address = TextBoxAddress.Text;
@@ -59,11 +114,16 @@ namespace HotelBookingSystem
             bookingToEdit.Guest.Email = TextBoxEmail.Text;
             bookingToEdit.Guest.IsResident = CheckBoxResident.Checked;
 
+            //Update dates
             bookingToEdit.CheckInDate = DateTimePickerCheckin.Value;
             bookingToEdit.CheckOutDate = DateTimePickerCheckout.Value;
-            bookingToEdit.Room.RoomType = (RoomType)ComboBoxRoomType.SelectedItem;
+
+            //Update booking details
             bookingToEdit.IsRecurring = CheckBoxRecurring.Checked;
             bookingToEdit.SpecialRequests = TextBoxSpecialRequests.Text;
+
+            bookingToEdit.Rooms.Clear();
+            bookingToEdit.Rooms.AddRange(updatedRooms);
 
             MessageBox.Show("Booking updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.DialogResult = DialogResult.OK;

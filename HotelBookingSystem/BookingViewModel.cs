@@ -17,9 +17,11 @@ namespace HotelBookingSystem
         public bool IsResident { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
-        public string RoomType { get; set; }
+        public List<Room> Rooms { get; } = new List<Room>();
         public bool IsRecurring { get; set; }
         public string SpecialRequests { get; set; }
+
+        public string RoomSummary => string.Join(", ", Rooms.Select(r => $"{r.RoomType} x{r.NumberOfRooms}"));
 
         public BookingViewModel(Booking booking)
         {
@@ -32,7 +34,7 @@ namespace HotelBookingSystem
             IsResident = booking.Guest.IsResident;
             CheckInDate = booking.CheckInDate;
             CheckOutDate = booking.CheckOutDate;
-            RoomType = booking.Room.RoomType.ToString();
+            Rooms = booking.Rooms;
             IsRecurring = booking.IsRecurring;
             SpecialRequests = string.Join(", ", booking.SpecialRequests);
         }

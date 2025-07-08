@@ -15,10 +15,16 @@ namespace HotelBookingSystem
 {
     public partial class FormBookingSubmission : Form
     {
-        private Room room = new Room();
+        private List<Room> rooms = new List<Room>();
         private Guest guest = new Guest();
         DateTime checkInDate, checkOutDate;
         bool isRecurring;
+
+        private int selectedStandard => (int)NumericUpDownStandard.Value;
+        private int selectedDeluxe => (int)NumericUpDownDeluxe.Value;
+        private int selectedSuite => (int)NumericUpDownSuite.Value;
+        private int selectedFamily => (int)NumericUpDownFamily.Value;
+
         public FormBookingSubmission()
         {
             InitializeComponent();
@@ -33,7 +39,7 @@ namespace HotelBookingSystem
         private void EnableSubmission()
         {
             bool isDateRangeValid = CheckinDatePicker.Value.Date < CheckoutDatePicker.Value.Date;
-            bool isRoomSelected = RoomSingle.Checked || RoomDouble.Checked || RoomTriple.Checked;
+            bool isRoomSelected = selectedStandard + selectedDeluxe + selectedSuite + selectedFamily > 0;
             bool isResidencySelected = RadioButtonResident.Checked || RadioButtonNonResident.Checked;
 
             bool areFieldsValid =
@@ -42,14 +48,6 @@ namespace HotelBookingSystem
                 !string.IsNullOrWhiteSpace(TextBoxAddress.Text) &&
                 IsValidMobile(TextBoxMobileNumber.Text) &&
                 IsValidEmail(TextBoxEmail.Text);
-
-            bool roomAvailable = true;
-
-            if (isDateRangeValid && isRoomSelected)
-            {
-                // check availability of selected room type
-                roomAvailable = BookingManager.IsRoomTypeAvailable(room.RoomType, CheckinDatePicker.Value.Date, CheckoutDatePicker.Value.Date);
-            }
 
             bool canButtonsEnable = isDateRangeValid && isRoomSelected && isResidencySelected && areFieldsValid;
             ButtonSubmit.Enabled = ButtonGenerateReceipt.Enabled = canButtonsEnable;
@@ -77,23 +75,6 @@ namespace HotelBookingSystem
             EnableSubmission();
         }
 
-        private void RoomSingle_CheckedChanged(object sender, EventArgs e)
-        {
-            room.RoomType = RoomType.Single;
-            EnableSubmission();
-        }
-
-        private void RoomDouble_CheckedChanged(object sender, EventArgs e)
-        {
-            room.RoomType = RoomType.Double;
-            EnableSubmission();
-        }
-
-        private void RoomTriple_CheckedChanged(object sender, EventArgs e)
-        {
-            room.RoomType = RoomType.Triple;
-            EnableSubmission();
-        }
 
 
         private void RadioButtonResident_CheckedChanged(object sender, EventArgs e)
@@ -143,18 +124,49 @@ namespace HotelBookingSystem
             isRecurring = true;
             EnableSubmission();
         }
+        private void NumericUpDownStandard_ValueChanged(object sender, EventArgs e)
+        {
+            EnableSubmission();
+        }
 
+        private void NumericUpDownDeluxe_ValueChanged(object sender, EventArgs e)
+        {
+            EnableSubmission();
+        }
+
+        private void NumericUpDownSuite_ValueChanged(object sender, EventArgs e)
+        {
+            EnableSubmission();
+        }
+
+        private void NumericUpDownFamily_ValueChanged(object sender, EventArgs e)
+        {
+            EnableSubmission();
+        }
         private void ButtonSubmit_Click(object sender, EventArgs e)
         {
-            if (!BookingManager.IsRoomTypeAvailable(room.RoomType, checkInDate, checkOutDate))
+            rooms.Clear();
+
+            // Build selected rooms list
+            if (selectedStandard > 0)
+                rooms.Add(new Room { RoomType = RoomType.Standard, NumberOfRooms = selectedStandard });
+            if (selectedDeluxe > 0)
+                rooms.Add(new Room { RoomType = RoomType.Deluxe, NumberOfRooms = selectedDeluxe });
+            if (selectedSuite > 0)
+                rooms.Add(new Room { RoomType = RoomType.Suite, NumberOfRooms = selectedSuite });
+            if (selectedFamily > 0)
+                rooms.Add(new Room { RoomType = RoomType.Family, NumberOfRooms = selectedFamily });
+
+            if (!BookingManager.AreRoomsAvailable(rooms, checkInDate, checkOutDate))
             {
-                MessageBox.Show($"All {room.RoomType} rooms are fully booked for the selected dates.", "Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("One or more room types are not available for the selected dates.", "Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+
             string specialRequests = string.Join(", ", ListBoxSpecialRequests.Text.Split('\n'));
 
-            Booking booking = new Booking(guest, checkInDate, checkOutDate, isRecurring, specialRequests, room);
+            Booking booking = new Booking(guest, checkInDate, checkOutDate, isRecurring, specialRequests, rooms);
 
             // Store the booking
             BookingManager.AddBooking(booking);
@@ -163,6 +175,33 @@ namespace HotelBookingSystem
             this.Close();
         }
 
-        
+        private void LinkLabelStandard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string roomDetails = "Standard – Basic amenities, ideal for solo/couple stay (Max: 2 people)\n";
+       
+
+            MessageBox.Show(roomDetails, "Standard Room Details", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void LinkLabelDeluxe_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string roomDetails ="Deluxe – Spacious with better view and facilities (Max: 3 people)\n";
+
+            MessageBox.Show(roomDetails, "Deluxe Room Details", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void LinkLabelSuite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string roomDetails ="Suite – Luxury space with living area and extras (Max: 4 people)\n";
+
+            MessageBox.Show(roomDetails, "Suite Details", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void LinkLabelFamily_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string roomDetails ="Family – Large space for groups or families (Max: 5 people)\n";
+
+            MessageBox.Show(roomDetails, "Family Room Details", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
