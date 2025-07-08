@@ -8,14 +8,18 @@ namespace HotelBookingSystem
 {
     internal class BookingManager
     {
+        private const int STANDARD_TOTAL_ROOMS = 5;
+        private const int DELUXE_TOTAL_ROOMS = 7;
+        private const int SUITE_TOTAL_ROOMS = 4;
+        private const int FAMILY_TOTAL_ROOMS = 5;
         public static List<Booking> Bookings { get; } = new List<Booking>();
 
         public static readonly Dictionary<RoomType, int> TotalRoomsPerType = new()
         {
-            { RoomType.Standard, 1 },
-            { RoomType.Deluxe, 7 },
-            { RoomType.Suite, 4 },
-            { RoomType.Family, 5 }
+            { RoomType.Standard, STANDARD_TOTAL_ROOMS },
+            { RoomType.Deluxe, DELUXE_TOTAL_ROOMS },
+            { RoomType.Suite, SUITE_TOTAL_ROOMS },
+            { RoomType.Family, FAMILY_TOTAL_ROOMS }
         };
 
 

@@ -125,6 +125,8 @@ namespace HotelBookingSystem
             bookingToEdit.Rooms.Clear();
             bookingToEdit.Rooms.AddRange(updatedRooms);
 
+            bookingToEdit.CalculateTotalBookingPrice();
+
             MessageBox.Show("Booking updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.DialogResult = DialogResult.OK;
             this.Close();

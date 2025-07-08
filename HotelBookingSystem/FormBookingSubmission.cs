@@ -19,6 +19,7 @@ namespace HotelBookingSystem
         private Guest guest = new Guest();
         DateTime checkInDate, checkOutDate;
         bool isRecurring;
+        float totalPrice;
 
         private int selectedStandard => (int)NumericUpDownStandard.Value;
         private int selectedDeluxe => (int)NumericUpDownDeluxe.Value;
@@ -34,7 +35,6 @@ namespace HotelBookingSystem
         {
             CheckinDatePicker.MinDate = DateTime.Now;
             ButtonSubmit.Enabled = false;
-            ButtonGenerateReceipt.Enabled = false;
         }
         private void EnableSubmission()
         {
@@ -50,7 +50,7 @@ namespace HotelBookingSystem
                 IsValidEmail(TextBoxEmail.Text);
 
             bool canButtonsEnable = isDateRangeValid && isRoomSelected && isResidencySelected && areFieldsValid;
-            ButtonSubmit.Enabled = ButtonGenerateReceipt.Enabled = canButtonsEnable;
+            ButtonSubmit.Enabled = canButtonsEnable;
         }
         private bool IsValidMobile(string mobile)
         {
@@ -168,38 +168,41 @@ namespace HotelBookingSystem
 
             Booking booking = new Booking(guest, checkInDate, checkOutDate, isRecurring, specialRequests, rooms);
 
+            booking.CalculateTotalBookingPrice();
+            totalPrice = booking.TotalPrice;
+
             // Store the booking
             BookingManager.AddBooking(booking);
 
-            MessageBox.Show($"New Booking has been Submitted. Booking ID is {booking.BookingId}", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        MessageBox.Show($"New Booking has been Submitted. Booking ID is {booking.BookingId}. Total Price is LKR.{totalPrice}.00.", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }
 
         private void LinkLabelStandard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string roomDetails = "Standard – Basic amenities, ideal for solo/couple stay (Max: 2 people)\n";
-       
+
 
             MessageBox.Show(roomDetails, "Standard Room Details", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void LinkLabelDeluxe_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string roomDetails ="Deluxe – Spacious with better view and facilities (Max: 3 people)\n";
+            string roomDetails = "Deluxe – Spacious with better view and facilities (Max: 3 people)\n";
 
             MessageBox.Show(roomDetails, "Deluxe Room Details", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void LinkLabelSuite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string roomDetails ="Suite – Luxury space with living area and extras (Max: 4 people)\n";
+            string roomDetails = "Suite – Luxury space with living area and extras (Max: 4 people)\n";
 
             MessageBox.Show(roomDetails, "Suite Details", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void LinkLabelFamily_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string roomDetails ="Family – Large space for groups or families (Max: 5 people)\n";
+            string roomDetails = "Family – Large space for groups or families (Max: 5 people)\n";
 
             MessageBox.Show(roomDetails, "Family Room Details", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

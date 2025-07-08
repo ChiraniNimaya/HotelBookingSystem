@@ -60,7 +60,6 @@
             NumericUpDownSuite = new NumericUpDown();
             NumericUpDownDeluxe = new NumericUpDown();
             NumericUpDownStandard = new NumericUpDown();
-            ButtonGenerateReceipt = new Button();
             GroupBoxGuest.SuspendLayout();
             GroupBoxBooking.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)NumericUpDownFamily).BeginInit();
@@ -404,22 +403,11 @@
             NumericUpDownStandard.TabIndex = 18;
             NumericUpDownStandard.ValueChanged += NumericUpDownStandard_ValueChanged;
             // 
-            // ButtonGenerateReceipt
-            // 
-            ButtonGenerateReceipt.Font = new Font("Segoe UI", 10F);
-            ButtonGenerateReceipt.Location = new Point(768, 598);
-            ButtonGenerateReceipt.Name = "ButtonGenerateReceipt";
-            ButtonGenerateReceipt.Size = new Size(159, 38);
-            ButtonGenerateReceipt.TabIndex = 33;
-            ButtonGenerateReceipt.Text = "Generate Receipt";
-            ButtonGenerateReceipt.UseVisualStyleBackColor = true;
-            // 
             // FormBookingSubmission
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1836, 668);
-            Controls.Add(ButtonGenerateReceipt);
             Controls.Add(GroupBoxBooking);
             Controls.Add(GroupBoxGuest);
             Controls.Add(ButtonSubmit);
@@ -462,7 +450,6 @@
         private Label LabelResidency;
         private GroupBox GroupBoxGuest;
         private GroupBox GroupBoxBooking;
-        private Button ButtonGenerateReceipt;
         private NumericUpDown NumericUpDownFamily;
         private NumericUpDown NumericUpDownSuite;
         private NumericUpDown NumericUpDownDeluxe;

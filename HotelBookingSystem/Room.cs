@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace HotelBookingSystem
 {
+    
     public enum RoomType
     {
         Standard,
@@ -18,5 +19,7 @@ namespace HotelBookingSystem
     {
         public RoomType RoomType { get; set; }
         public int NumberOfRooms { get; set; } = 0;
+
+
     }
 }
