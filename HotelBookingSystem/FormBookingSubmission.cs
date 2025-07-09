@@ -174,7 +174,34 @@ namespace HotelBookingSystem
             // Store the booking
             BookingManager.AddBooking(booking);
 
-        MessageBox.Show($"New Booking has been Submitted. Booking ID is {booking.BookingId}. Total Price is LKR.{totalPrice}.00.", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            int bookingCount = 1;
+
+            if (isRecurring)
+            {
+                for (int i = 1; i <= 11; i++) // Next 11 months
+                {
+                    DateTime recurringCheckIn = checkInDate.AddMonths(i);
+                    DateTime recurringCheckOut = checkOutDate.AddMonths(i);
+
+                    // Clone room list
+                    var clonedRooms = rooms.Select(r => new Room { RoomType = r.RoomType, NumberOfRooms = r.NumberOfRooms }).ToList();
+
+                    if (BookingManager.AreRoomsAvailable(clonedRooms, recurringCheckIn, recurringCheckOut))
+                    {
+                        Booking recurringBooking = new Booking(guest, recurringCheckIn, recurringCheckOut, true, specialRequests, clonedRooms);
+                        PricingManager.UpdateTotalBookingPrice(recurringBooking);
+                        BookingManager.AddBooking(recurringBooking);
+                        bookingCount++;
+                    }
+                }
+            }
+
+            MessageBox.Show($"New Booking has been Submitted.\n" +
+                $"Booking ID: {booking.BookingId}\n" +
+                $"Total Price: LKR {totalPrice}.00\n" +
+                $"{(isRecurring ? $"Recurring bookings added for next {bookingCount - 1} months." : "")}",
+                "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             this.Close();
         }
 
