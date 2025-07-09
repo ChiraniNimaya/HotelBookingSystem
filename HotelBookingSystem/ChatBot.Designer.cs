@@ -32,6 +32,7 @@
             TextBoxUserQuery = new TextBox();
             ButtonChatbotSend = new Button();
             LabelAnswer = new Label();
+            RichTextBoxAnswer = new RichTextBox();
             SuspendLayout();
             // 
             // LabelAskMe
@@ -59,21 +60,31 @@
             ButtonChatbotSend.TabIndex = 2;
             ButtonChatbotSend.Text = "Send";
             ButtonChatbotSend.UseVisualStyleBackColor = true;
+            ButtonChatbotSend.Click += ButtonChatbotSend_Click;
             // 
             // LabelAnswer
             // 
             LabelAnswer.AutoSize = true;
-            LabelAnswer.Location = new Point(401, 188);
+            LabelAnswer.Location = new Point(383, 182);
             LabelAnswer.Name = "LabelAnswer";
             LabelAnswer.Size = new Size(206, 20);
             LabelAnswer.TabIndex = 3;
             LabelAnswer.Text = "Answer will be displayed here";
             // 
+            // RichTextBoxAnswer
+            // 
+            RichTextBoxAnswer.Location = new Point(383, 234);
+            RichTextBoxAnswer.Name = "RichTextBoxAnswer";
+            RichTextBoxAnswer.Size = new Size(476, 302);
+            RichTextBoxAnswer.TabIndex = 5;
+            RichTextBoxAnswer.Text = "";
+            // 
             // FormChatBot
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(900, 594);
+            Controls.Add(RichTextBoxAnswer);
             Controls.Add(LabelAnswer);
             Controls.Add(ButtonChatbotSend);
             Controls.Add(TextBoxUserQuery);
@@ -91,5 +102,6 @@
         private TextBox TextBoxUserQuery;
         private Button ButtonChatbotSend;
         private Label LabelAnswer;
+        private RichTextBox RichTextBoxAnswer;
     }
 }

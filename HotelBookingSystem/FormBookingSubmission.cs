@@ -168,7 +168,7 @@ namespace HotelBookingSystem
 
             Booking booking = new Booking(guest, checkInDate, checkOutDate, isRecurring, specialRequests, rooms);
 
-            booking.CalculateTotalBookingPrice();
+            PricingManager.UpdateTotalBookingPrice(booking);
             totalPrice = booking.TotalPrice;
 
             // Store the booking
