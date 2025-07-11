@@ -76,7 +76,6 @@ namespace HotelBookingSystem
         }
 
 
-
         private void RadioButtonResident_CheckedChanged(object sender, EventArgs e)
         {
             guest.IsResident = true;
@@ -147,7 +146,7 @@ namespace HotelBookingSystem
         {
             rooms.Clear();
 
-            // Build selected rooms list
+            // Store selected rooms in rooms list
             if (selectedStandard > 0)
                 rooms.Add(new Room { RoomType = RoomType.Standard, NumberOfRooms = selectedStandard });
             if (selectedDeluxe > 0)
@@ -208,7 +207,6 @@ namespace HotelBookingSystem
         private void LinkLabelStandard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string roomDetails = "Standard – Basic amenities, ideal for solo/couple stay (Max: 2 people)\n";
-
 
             MessageBox.Show(roomDetails, "Standard Room Details", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

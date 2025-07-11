@@ -47,57 +47,62 @@
             // 
             // ButtonSubmit
             // 
+            ButtonSubmit.BackColor = SystemColors.GradientInactiveCaption;
             ButtonSubmit.Location = new Point(283, 121);
             ButtonSubmit.Name = "ButtonSubmit";
             ButtonSubmit.Size = new Size(203, 41);
             ButtonSubmit.TabIndex = 1;
             ButtonSubmit.Text = "Submit New Booking";
-            ButtonSubmit.UseVisualStyleBackColor = true;
+            ButtonSubmit.UseVisualStyleBackColor = false;
             ButtonSubmit.Click += ButtonSubmit_Click;
             // 
             // ButtonRequest
             // 
+            ButtonRequest.BackColor = SystemColors.GradientInactiveCaption;
             ButtonRequest.Location = new Point(283, 270);
             ButtonRequest.Name = "ButtonRequest";
             ButtonRequest.Size = new Size(203, 38);
             ButtonRequest.TabIndex = 2;
             ButtonRequest.Text = "Request Weekly Report";
-            ButtonRequest.UseVisualStyleBackColor = true;
+            ButtonRequest.UseVisualStyleBackColor = false;
             ButtonRequest.Click += ButtonRequest_Click;
             // 
             // ButtonChatBot
             // 
+            ButtonChatBot.BackColor = SystemColors.GradientInactiveCaption;
             ButtonChatBot.Font = new Font("Segoe UI", 10F);
             ButtonChatBot.Location = new Point(306, 348);
             ButtonChatBot.Name = "ButtonChatBot";
             ButtonChatBot.Size = new Size(149, 40);
             ButtonChatBot.TabIndex = 3;
             ButtonChatBot.Text = "Open Chatbot";
-            ButtonChatBot.UseVisualStyleBackColor = true;
+            ButtonChatBot.UseVisualStyleBackColor = false;
             ButtonChatBot.Click += ButtonChatBot_Click;
             // 
             // ButtonEditBookings
             // 
+            ButtonEditBookings.BackColor = SystemColors.GradientInactiveCaption;
             ButtonEditBookings.Location = new Point(306, 197);
             ButtonEditBookings.Name = "ButtonEditBookings";
             ButtonEditBookings.Size = new Size(160, 38);
             ButtonEditBookings.TabIndex = 4;
             ButtonEditBookings.Text = "Edit Bookings";
-            ButtonEditBookings.UseVisualStyleBackColor = true;
+            ButtonEditBookings.UseVisualStyleBackColor = false;
             ButtonEditBookings.Click += ButtonEditBookings_Click;
             // 
             // FormBookingService
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(823, 503);
+            BackColor = SystemColors.ActiveCaption;
+            ClientSize = new Size(799, 496);
             Controls.Add(ButtonEditBookings);
             Controls.Add(ButtonChatBot);
             Controls.Add(ButtonRequest);
             Controls.Add(ButtonSubmit);
             Controls.Add(LabelWelcome);
             Name = "FormBookingService";
-            Text = "FormBookingService";
+            Text = "Hotel Booking Service";
             ResumeLayout(false);
             PerformLayout();
         }

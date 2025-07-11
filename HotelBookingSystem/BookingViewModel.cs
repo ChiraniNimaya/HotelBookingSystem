@@ -20,6 +20,7 @@ namespace HotelBookingSystem
         public List<Room> Rooms { get; } = new List<Room>();
         public bool IsRecurring { get; set; }
         public string SpecialRequests { get; set; }
+        public float TotalPrice { get; set; }
 
         public string RoomSummary => string.Join(", ", Rooms.Select(r => $"{r.RoomType} x{r.NumberOfRooms}"));
 
@@ -37,6 +38,7 @@ namespace HotelBookingSystem
             Rooms = booking.Rooms;
             IsRecurring = booking.IsRecurring;
             SpecialRequests = string.Join(", ", booking.SpecialRequests);
+            TotalPrice = booking.TotalPrice;
         }
     }
 }

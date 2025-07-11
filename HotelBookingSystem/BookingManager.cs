@@ -54,7 +54,7 @@ namespace HotelBookingSystem
             var overlappingBookings = GetAllBookings()
                 .Where(b =>
                     !(b.CheckOutDate <= checkIn || b.CheckInDate >= checkOut) &&
-                    (!excludeBookingId.HasValue || b.BookingId != excludeBookingId.Value)
+                    (!excludeBookingId.HasValue || b.BookingId != excludeBookingId.Value) //when updating an existing booking, avoid same booking
                 );
 
             // Subtract existing bookings from available stock
