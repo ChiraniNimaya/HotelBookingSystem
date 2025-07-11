@@ -12,14 +12,17 @@ namespace HotelBookingSystem
 {
     public partial class FormWeeklyView : Form
     {
-        public FormWeeklyView()
+        private DateTime targetDate;
+        public FormWeeklyView(DateTime targetDate)
         {
+            this.targetDate = targetDate;
             InitializeComponent();
         }
 
         private void FormWeeklyView_Load(object sender, EventArgs e)
         {
-            var weeklyBookings = BookingManager.GetBookingsForCurrentWeek().Select(b => new
+            
+            var weeklyBookings = BookingManager.GetBookingsForWeek(targetDate).Select(b => new
             {
                 BookingID = b.BookingId,
                 GuestName = b.Guest.Name,

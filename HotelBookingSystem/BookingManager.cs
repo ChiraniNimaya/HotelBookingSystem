@@ -33,12 +33,11 @@ namespace HotelBookingSystem
             return Bookings;
         }
 
-        public static IEnumerable<Booking> GetBookingsForCurrentWeek()
+        public static IEnumerable<Booking> GetBookingsForWeek(DateTime targetDate)
         {
-            DateTime today = DateTime.Today;
-            // Get start (Monday) and end (Sunday) of the current week
-            int daysSinceMonday = ((int)today.DayOfWeek + 6) % 7;
-            DateTime weekStart = today.AddDays(-daysSinceMonday); // Monday
+            // Get start (Monday) and end (Sunday)
+            int daysSinceMonday = ((int)targetDate.DayOfWeek + 6) % 7;
+            DateTime weekStart = targetDate.AddDays(-daysSinceMonday); // Monday
             DateTime weekEnd = weekStart.AddDays(6); // Sunday
 
             return Bookings.Where(b =>
