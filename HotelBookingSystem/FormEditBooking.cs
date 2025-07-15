@@ -13,6 +13,8 @@ namespace HotelBookingSystem
     public partial class FormEditBooking : Form
     {
         private Booking bookingToEdit;
+        private bool originalIsRecurring;
+
         public FormEditBooking(Booking booking)
         {
             InitializeComponent();
@@ -37,6 +39,7 @@ namespace HotelBookingSystem
             //Booking details
             TextBoxBookingId.Text = bookingToEdit.BookingId.ToString();
             CheckBoxRecurring.Checked = bookingToEdit.IsRecurring;
+            originalIsRecurring = bookingToEdit.IsRecurring;
             TextBoxSpecialRequests.Text = bookingToEdit.SpecialRequests;
 
             TextBoxBookingId.ReadOnly = true;
@@ -121,6 +124,63 @@ namespace HotelBookingSystem
             //Update booking details
             bookingToEdit.IsRecurring = CheckBoxRecurring.Checked;
             bookingToEdit.SpecialRequests = TextBoxSpecialRequests.Text;
+
+            //handle recurring field changes
+            // Handle recurring logic
+            if (!originalIsRecurring && bookingToEdit.IsRecurring)
+            {
+                // Generate next 11 recurring bookings
+                for (int i = 1; i <= 11; i++)
+                {
+                    var newBooking = new Booking
+                    {
+                        Guest = new Guest
+                        {
+                            Name = bookingToEdit.Guest.Name,
+                            NIC = bookingToEdit.Guest.NIC,
+                            Address = bookingToEdit.Guest.Address,
+                            MobileNumber = bookingToEdit.Guest.MobileNumber,
+                            Email = bookingToEdit.Guest.Email,
+                            IsResident = bookingToEdit.Guest.IsResident
+                        },
+                        CheckInDate = bookingToEdit.CheckInDate.AddMonths(i),
+                        CheckOutDate = bookingToEdit.CheckOutDate.AddMonths(i),
+                        IsRecurring = true,
+                        SpecialRequests = bookingToEdit.SpecialRequests
+                    };
+                    foreach (var r in bookingToEdit.Rooms)
+                    {
+                        newBooking.Rooms.Add(new Room
+                        {
+                            RoomType = r.RoomType,
+                            NumberOfRooms = r.NumberOfRooms
+                        });
+                    }
+                    PricingManager.UpdateTotalBookingPrice(newBooking);
+                    BookingManager.GetAllBookings().Add(newBooking);
+                }
+            }
+            else if (originalIsRecurring && !bookingToEdit.IsRecurring)
+            {
+                // Remove next 11 recurring bookings for this guest, matching room types & NIC
+                DateTime start = bookingToEdit.CheckInDate.AddMonths(1);
+                DateTime end = bookingToEdit.CheckInDate.AddMonths(11);
+
+                var bookingsToRemove = BookingManager.GetAllBookings()
+                    .Where(b =>
+                        b.BookingId != bookingToEdit.BookingId &&
+                        b.Guest.NIC == bookingToEdit.Guest.NIC &&
+                        b.IsRecurring &&
+                        b.CheckInDate >= start &&
+                        b.CheckInDate <= end)
+                    .ToList();
+
+                foreach (var b in bookingsToRemove)
+                {
+                    BookingManager.GetAllBookings().Remove(b);
+                }
+            }
+
 
             bookingToEdit.Rooms.Clear();
             bookingToEdit.Rooms.AddRange(updatedRooms);

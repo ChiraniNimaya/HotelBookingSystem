@@ -18,6 +18,10 @@ namespace HotelBookingSystem
         public List<Room> Rooms { get; } = new List<Room>();
         public float TotalPrice { get; set; }
 
+        public Booking()
+        {
+            BookingId = ++s_lastBookingId; // Auto-incrementing ID
+        }
         public Booking(Guest guest, DateTime checkIn, DateTime checkOut, bool isRecurring, string specialRequests, List<Room> rooms)
         {
             BookingId = ++s_lastBookingId; // Auto-incrementing ID

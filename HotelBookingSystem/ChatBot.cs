@@ -283,13 +283,12 @@ namespace HotelBookingSystem
                     .Where(b => b.TotalPrice > 0 && b.Rooms.Any(r => r.RoomType == roomType))
                     .Select(b => new
                     {
-                        Booking = b,
                         Nights = (b.CheckOutDate - b.CheckInDate).Days,
                         RoomCount = b.Rooms.Where(r => r.RoomType == roomType).Sum(r => r.NumberOfRooms),
-                        RoomTypePrice = PricingManager.CalculateRoomRate(roomType, b.CheckInDate, b.Guest.IsResident)
+                        TotalPrice = b.TotalPrice
                     })
-                    .Where(x => x.Nights > 0 && x.RoomCount > 0 && x.RoomTypePrice > 0)
-                    .Select(x => x.RoomTypePrice / (x.Nights * x.RoomCount)) // Price per room per night
+                    .Where(x => x.Nights > 0 && x.RoomCount > 0)
+                    .Select(x => x.TotalPrice / (x.Nights * x.RoomCount)) // Price per room per night
                     .DefaultIfEmpty(baseRate)
                     .Average();
 
