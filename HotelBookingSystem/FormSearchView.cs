@@ -126,7 +126,8 @@ namespace HotelBookingSystem
                             )
                             .ToList();
 
-                        DataGridViewBookings.DataSource = new BindingList<Booking>(updatedList);
+                        var viewModelList = updatedList.Select(b => new BookingViewModel(b)).ToList();
+                        DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(viewModelList);
 
                         MessageBox.Show("Booking deleted successfully.");
                     }

@@ -20,42 +20,37 @@ namespace HotelBookingSystem
             { RoomType.Suite, SUITE_BASE_PRICE },
             { RoomType.Family, FAMILY_BASE_PRICE }
         };
+
+        public static float CalculateSeasonalMultiplier(DateTime date)
+        {
+            int month = date.Month;
+
+            //Holidays (December)
+            if (month == 12) return 1.25f;
+
+            // Peak season (Jan-March)
+            if (month == 1 || month == 2 || month == 3) return 1.2f;
+
+            //Mid season (August)
+            if (month == 8) return 1.15f;
+
+            // Pre Peak seasons (September, November)
+            if (month == 5 || month == 6) return 1.1f;
+
+            // Rainy season (May-June)
+            if (month == 5 || month == 6) return 0.9f;
+
+            // Low season (April, July, October)
+            return 1.0f;
+        }
+
         public static float CalculateRoomRate(RoomType type, DateTime date, bool isResident)
         {
 
-            float multiplier = 1.0f;
+            float guestMultiplier = isResident ? 0.8f : 1.0f;
+            float seasonalMultiplier = CalculateSeasonalMultiplier(date);
 
-            // Holiday list (2025 Sri Lanka)
-            var holidays = new HashSet<DateTime>
-            {
-                new DateTime(2025, 1, 15),  // Thai Pongal
-                new DateTime(2025, 2, 4),   // Independence Day
-                new DateTime(2025, 3, 7),   // Maha Shivaratri
-                new DateTime(2025, 4, 13),  // Sinhala New Year Eve
-                new DateTime(2025, 4, 14),  // Sinhala New Year
-                new DateTime(2025, 5, 1),   // Labour Day
-                new DateTime(2025, 5, 10),  // Vesak
-                new DateTime(2025, 6, 18),  // Poson
-                new DateTime(2025, 7, 10),  // Esala
-            };
-
-            bool isHoliday = holidays.Contains(date.Date);
-            bool isPeak = date.Month >= 1 && date.Month <= 3;
-            bool isRainy = date.Month >= 5 && date.Month <= 6;
-
-            // Apply season-based adjustments
-            if (isPeak)
-                multiplier += isResident ? 0.05f : 0.2f;
-            if (isRainy)
-                multiplier += isResident ? -0.2f : -0.1f;
-            if (isHoliday)
-                multiplier += isResident ? 0.15f : 0.3f;
-
-            // Resident discount on base
-            if (isResident)
-                multiplier -= 0.15f; // Base discount
-
-            return RoomRate[type] * multiplier;
+            return RoomRate[type] * guestMultiplier * seasonalMultiplier;
         }
         public static void UpdateTotalBookingPrice(Booking booking)
         {

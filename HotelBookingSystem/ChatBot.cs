@@ -301,14 +301,14 @@ namespace HotelBookingSystem
             float demandMultiplier = CalculateDemandMultiplier(roomType, checkIn);
 
             // Seasonal pricing
-            float seasonalMultiplier = CalculateSeasonalMultiplier(checkIn);
+            float seasonalMultiplier = PricingManager.CalculateSeasonalMultiplier(checkIn);
 
             // Guest type pricing
             float guestMultiplier = isResident ? 0.8f : 1.0f; // 20% discount for residents
 
             // Weekend pricing
             float weekendMultiplier = (checkIn.DayOfWeek == DayOfWeek.Friday ||
-                                        checkIn.DayOfWeek == DayOfWeek.Saturday) ? 1.2f : 1.0f;
+                                        checkIn.DayOfWeek == DayOfWeek.Saturday) ? 1.05f : 1.0f;
 
             return baseRate * demandMultiplier * seasonalMultiplier * guestMultiplier * weekendMultiplier;            
         }
@@ -333,31 +333,7 @@ namespace HotelBookingSystem
             if (occupancyRate > 0.6f) return 1.15f;     // Medium demand
             if (occupancyRate > 0.4f) return 1.0f;      // Normal demand
             return 0.9f;                                 // Low demand
-        }
-
-        // Calculate seasonal pricing multiplier
-        private float CalculateSeasonalMultiplier(DateTime date)
-        {
-            int month = date.Month;
-
-            //Holidays (December)
-            if (month == 12) return 1.25f;
-
-            // Peak season (Jan-March)
-            if (month == 1 || month == 2 || month == 3) return 1.2f;
-
-            //Mid season (August)
-            if (month == 8) return 1.15f;
-
-            // Pre Peak seasons (September,, November)
-            if (month == 5 || month == 6) return 1.1f;
-
-            // Rainy season (May-June)
-            if (month == 5 || month == 6) return 0.9f;
-
-            // Low season (April, July, October)
-            return 1.0f;
-        }
+        }        
 
 
         // Availability checking
@@ -444,11 +420,10 @@ namespace HotelBookingSystem
                     else
                         availabilityLevel = "Excellent availability";
 
-                    return $"✓ {availabilityLevel}!\n" +
+                    return $"{availabilityLevel}!\n" +
                            $"{quantity} {roomType} {roomText} predicted to be available\n" +
                            $"Check-in: {checkIn:MMM dd, yyyy} | Check-out: {checkOut:MMM dd, yyyy} ({nights} nights)\n\n" +
-                           $"Current occupancy: {occupied}/{total} rooms ({occupancyRate:P0})\n\n" +
-                           $"Would you like to know the predicted price or get booking assistance?";
+                           $"Current occupancy: {occupied}/{total} rooms ({occupancyRate:P0})\n\n";
                 }
                 else
                 {
