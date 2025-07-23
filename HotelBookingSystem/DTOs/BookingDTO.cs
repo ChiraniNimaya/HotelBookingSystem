@@ -4,27 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelBookingSystem
+namespace HotelBookingSystem.DTOs
 {
-    public class Booking
+    public class BookingDTO
     {
-        private static int s_lastBookingId = 0;
+        public int? BookingId { get; set; }
         public Guest Guest { get; set; }
-        public int BookingId { get; private set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
         public bool IsRecurring { get; set; }
         public string SpecialRequests { get; set; }
-        public List<Room> Rooms { get; } = new List<Room>();
-        public float TotalPrice { get; set; }
+        public List<Room> Rooms { get; set; } = new List<Room>();
 
-        public Booking()
+        public BookingDTO(Guest guest, DateTime checkIn, DateTime checkOut, bool isRecurring, string specialRequests, List<Room> rooms)
         {
-            BookingId = ++s_lastBookingId; // Auto-incrementing ID
-        }
-        public Booking(Guest guest, DateTime checkIn, DateTime checkOut, bool isRecurring, string specialRequests, List<Room> rooms)
-        {
-            BookingId = ++s_lastBookingId; // Auto-incrementing ID
             Guest = guest;
             CheckInDate = checkIn;
             CheckOutDate = checkOut;
@@ -33,6 +26,5 @@ namespace HotelBookingSystem
             Rooms = rooms;
         }
     }
+
 }
-
-

@@ -1,14 +1,18 @@
-﻿using System;
+﻿using Azure;
+using HotelBookingSystem.DTOs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace HotelBookingSystem
@@ -142,7 +146,7 @@ namespace HotelBookingSystem
         {
             EnableSubmission();
         }
-        private void ButtonSubmit_Click(object sender, EventArgs e)
+        private async void ButtonSubmit_ClickAsync(object sender, EventArgs e)
         {
             rooms.Clear();
 
@@ -172,6 +176,17 @@ namespace HotelBookingSystem
 
             // Store the booking
             BookingManager.AddBooking(booking);
+
+            //----------------------------------------------------------//
+            BookingDTO newBooking = new BookingDTO(guest, checkInDate, checkOutDate, isRecurring, specialRequests, rooms);
+            var apiClient = new BookingApiClient();
+            bool result = await apiClient.SubmitBookingAsync(newBooking);
+
+            if (result)
+                MessageBox.Show("Booking submitted to server!");
+            else
+                MessageBox.Show("Error submitting booking.");
+            //----------------------------------------------------------//
 
             int bookingCount = 1;
 

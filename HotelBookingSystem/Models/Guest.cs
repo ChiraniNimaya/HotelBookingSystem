@@ -8,6 +8,7 @@ namespace HotelBookingSystem
 {
     public class Guest
     {
+        public int GuestId { get; set; }
         public string Name { get; set; }
         public string NIC { get; set; }
         public string Address { get; set; }

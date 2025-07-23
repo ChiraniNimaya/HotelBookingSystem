@@ -154,7 +154,7 @@
             ButtonSubmit.TabIndex = 16;
             ButtonSubmit.Text = "Submit";
             ButtonSubmit.UseVisualStyleBackColor = true;
-            ButtonSubmit.Click += ButtonSubmit_Click;
+            ButtonSubmit.Click += ButtonSubmit_ClickAsync;
             // 
             // LabelAddress
             // 
