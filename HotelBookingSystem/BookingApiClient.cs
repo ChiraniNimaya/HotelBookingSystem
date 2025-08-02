@@ -26,6 +26,8 @@ namespace HotelBookingSystem
             public int BookingId { get; set; }
             public float TotalPrice { get; set; }
             public List<int> RoomIds { get; set; }
+
+            public List<string> FailedMonths { get; set; }
         }
 
         public class BookingErrorResponse
@@ -53,12 +55,32 @@ namespace HotelBookingSystem
                         return true;
                     }
 
-                    MessageBox.Show(
-                        $"Booking created!\n\nBooking ID: {success.BookingId}\nTotal Price: {success.TotalPrice:C}",
-                        "Success",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
+                    // Check if there are failed months
+                    if (success.FailedMonths != null && success.FailedMonths.Any())
+                    {
+                        // Format month names into a nice string
+                        string failedMonthsList = string.Join(", ", success.FailedMonths);
+
+                        MessageBox.Show(
+                            $"Booking created, but some recurring months could not be booked.\n\n" +
+                            $"Booking ID: {success.BookingId}\n" +
+                            $"Total Price: {success.TotalPrice:C}\n\n" +
+                            $"Failed Months: {failedMonthsList}",
+                            "Partial Success",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
+                    }
+                    else
+                    {
+                        // Default success message
+                        MessageBox.Show(
+                            $"Booking created!\n\nBooking ID: {success.BookingId}\nTotal Price: {success.TotalPrice:C}",
+                            "Success",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) // Rooms unavailable
                 {
