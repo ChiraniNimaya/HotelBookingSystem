@@ -57,20 +57,20 @@ namespace HotelBookingSystem
                     (!excludeBookingId.HasValue || b.BookingId != excludeBookingId.Value) //when updating an existing booking, avoid same booking
                 );
 
-            // Subtract existing bookings from available stock
-            foreach (var booking in overlappingBookings)
-            {
-                foreach (var room in booking.Rooms)
-                {
-                    if (availableRooms.ContainsKey(room.RoomType))
-                        availableRooms[room.RoomType] -= room.NumberOfRooms;
-                }
-            }
+            //// Subtract existing bookings from available stock
+            //foreach (var booking in overlappingBookings)
+            //{
+            //    foreach (var room in booking.Rooms)
+            //    {
+            //        if (availableRooms.ContainsKey(room.RoomType))
+            //            availableRooms[room.RoomType] -= room.RoomCount;
+            //    }
+            //}
 
             // Check if all requested rooms are available
             foreach (var request in requestedRooms)
             {
-                if (!availableRooms.ContainsKey(request.RoomType) || availableRooms[request.RoomType] < request.NumberOfRooms)
+                if (!availableRooms.ContainsKey(request.RoomType) || availableRooms[request.RoomType] < request.RoomCount)
                     return false;
             }
 

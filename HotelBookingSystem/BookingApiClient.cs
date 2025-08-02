@@ -21,17 +21,80 @@ namespace HotelBookingSystem
             };
         }
 
-        public async Task<bool> SubmitBookingAsync(BookingDTO dto)
+        public class BookingSuccessResponse
         {
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/booking", dto);
-            if (!response.IsSuccessStatusCode)
-            {
-                string error = await response.Content.ReadAsStringAsync();
-                MessageBox.Show($"Failed: {response.StatusCode}\nDetails: {error}");
-            }
-            return response.IsSuccessStatusCode;
+            public int BookingId { get; set; }
+            public float TotalPrice { get; set; }
+            public List<int> RoomIds { get; set; }
         }
 
+        public class BookingErrorResponse
+        {
+            public string Message { get; set; }
+            public Dictionary<string, int> UnavailableRooms { get; set; }
+        }
+
+
+        public async Task<bool> SubmitBookingAsync(BookingDTO dto)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/booking", dto);
+
+                if (response.IsSuccessStatusCode) // Success (200 OK)
+                {
+                    // Deserialize to BookingSuccessResponse instead of BookingDTO
+                    var success = await response.Content.ReadFromJsonAsync<BookingSuccessResponse>();
+
+                    if (success == null)
+                    {
+                        MessageBox.Show("Booking succeeded but no details were returned.",
+                                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return true;
+                    }
+
+                    MessageBox.Show(
+                        $"Booking created!\n\nBooking ID: {success.BookingId}\nTotal Price: {success.TotalPrice:C}",
+                        "Success",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) // Rooms unavailable
+                {
+                    var errorContent = await response.Content.ReadFromJsonAsync<BookingErrorResponse>();
+
+                    if (errorContent == null)
+                    {
+                        MessageBox.Show("Booking failed but server didn't return an error message.",
+                                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+
+                    string msg = $"{errorContent.Message}\n\n";
+                    foreach (var kvp in errorContent.UnavailableRooms)
+                    {
+                        msg += $"{kvp.Key}: {kvp.Value} not available\n";
+                    }
+
+                    MessageBox.Show(msg, "Booking Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else  // Unexpected server error
+                {
+                    string serverMsg = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Error: {response.StatusCode}\n{serverMsg}", "Server Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}",
+                                "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
     }
 
 }
+

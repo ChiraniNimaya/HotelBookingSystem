@@ -19,7 +19,7 @@ namespace HotelBookingSystem
 {
     public partial class FormBookingSubmission : Form
     {
-        private List<Room> rooms = new List<Room>();
+        private Dictionary<RoomType, int> roomInfo = new Dictionary<RoomType, int>();
         private Guest guest = new Guest();
         DateTime checkInDate, checkOutDate;
         bool isRecurring;
@@ -148,73 +148,40 @@ namespace HotelBookingSystem
         }
         private async void ButtonSubmit_ClickAsync(object sender, EventArgs e)
         {
-            rooms.Clear();
+            roomInfo.Clear();
 
             // Store selected rooms in rooms list
             if (selectedStandard > 0)
-                rooms.Add(new Room { RoomType = RoomType.Standard, NumberOfRooms = selectedStandard });
+                roomInfo.Add(RoomType.Standard, selectedStandard );
             if (selectedDeluxe > 0)
-                rooms.Add(new Room { RoomType = RoomType.Deluxe, NumberOfRooms = selectedDeluxe });
+                roomInfo.Add(RoomType.Deluxe, selectedStandard);
             if (selectedSuite > 0)
-                rooms.Add(new Room { RoomType = RoomType.Suite, NumberOfRooms = selectedSuite });
+                roomInfo.Add(RoomType.Suite, selectedStandard);
             if (selectedFamily > 0)
-                rooms.Add(new Room { RoomType = RoomType.Family, NumberOfRooms = selectedFamily });
-
-            if (!BookingManager.AreRoomsAvailable(rooms, checkInDate, checkOutDate))
-            {
-                MessageBox.Show("One or more room types are not available for the selected dates.", "Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
+                roomInfo.Add(RoomType.Family, selectedStandard);
 
             string specialRequests = string.Join(", ", ListBoxSpecialRequests.Text.Split('\n'));
 
-            Booking booking = new Booking(guest, checkInDate, checkOutDate, isRecurring, specialRequests, rooms);
+            BookingDTO newBookingDto = new BookingDTO();
+            newBookingDto.CheckInDate = checkInDate;
+            newBookingDto.CheckOutDate = checkOutDate;
+            newBookingDto.IsRecurring = isRecurring;
+            newBookingDto.SpecialRequests = specialRequests;
+            newBookingDto.RoomInfo = roomInfo;
 
-            PricingManager.UpdateTotalBookingPrice(booking);
-            totalPrice = booking.TotalPrice;
+            GuestDTO guestDto = new GuestDTO();
+            guestDto.GuestId = guest.GuestId;
+            guestDto.Name = guest.Name;
+            guestDto.NIC = guest.NIC;
+            guestDto.Address = guest.Address;
+            guestDto.MobileNumber = guest.MobileNumber;
+            guestDto.Email = guest.Email;
+            guestDto.IsResident = guest.IsResident;
 
-            // Store the booking
-            BookingManager.AddBooking(booking);
+            newBookingDto.GuestDto = guestDto;
 
-            //----------------------------------------------------------//
-            BookingDTO newBooking = new BookingDTO(guest, checkInDate, checkOutDate, isRecurring, specialRequests, rooms);
             var apiClient = new BookingApiClient();
-            bool result = await apiClient.SubmitBookingAsync(newBooking);
-
-            if (result)
-                MessageBox.Show("Booking submitted to server!");
-            else
-                MessageBox.Show("Error submitting booking.");
-            //----------------------------------------------------------//
-
-            int bookingCount = 1;
-
-            if (isRecurring)
-            {
-                for (int i = 1; i <= 11; i++) // Next 11 months
-                {
-                    DateTime recurringCheckIn = checkInDate.AddMonths(i);
-                    DateTime recurringCheckOut = checkOutDate.AddMonths(i);
-
-                    // Clone room list
-                    var clonedRooms = rooms.Select(r => new Room { RoomType = r.RoomType, NumberOfRooms = r.NumberOfRooms }).ToList();
-
-                    if (BookingManager.AreRoomsAvailable(clonedRooms, recurringCheckIn, recurringCheckOut))
-                    {
-                        Booking recurringBooking = new Booking(guest, recurringCheckIn, recurringCheckOut, true, specialRequests, clonedRooms);
-                        PricingManager.UpdateTotalBookingPrice(recurringBooking);
-                        BookingManager.AddBooking(recurringBooking);
-                        bookingCount++;
-                    }
-                }
-            }
-
-            MessageBox.Show($"New Booking has been Submitted.\n" +
-                $"Booking ID: {booking.BookingId}\n" +
-                $"Total Price: LKR {totalPrice}.00\n" +
-                $"{(isRecurring ? $"Recurring bookings added for next {bookingCount - 1} months." : "")}",
-                "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            bool result = await apiClient.SubmitBookingAsync(newBookingDto);
 
             this.Close();
         }

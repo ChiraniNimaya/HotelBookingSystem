@@ -19,8 +19,8 @@ namespace HotelBookingSystem
     {
         public int RoomId { get; set; }
         public RoomType RoomType { get; set; }
-        public int NumberOfRooms { get; set; } = 0;
 
-
+        //Delete
+        public int RoomCount { get; set; }
     }
 }

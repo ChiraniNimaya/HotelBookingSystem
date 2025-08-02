@@ -45,24 +45,24 @@ namespace HotelBookingSystem
             TextBoxBookingId.ReadOnly = true;
 
             // Room selection: assign values to numeric counters
-            foreach (var room in bookingToEdit.Rooms)
-            {
-                switch (room.RoomType)
-                {
-                    case RoomType.Standard:
-                        NumericUpDownStandard.Value = room.NumberOfRooms;
-                        break;
-                    case RoomType.Deluxe:
-                        NumericUpDownDeluxe.Value = room.NumberOfRooms;
-                        break;
-                    case RoomType.Suite:
-                        NumericUpDownSuite.Value = room.NumberOfRooms;
-                        break;
-                    case RoomType.Family:
-                        NumericUpDownFamily.Value = room.NumberOfRooms;
-                        break;
-                }
-            }
+            //foreach (var room in bookingToEdit.Rooms)
+            //{
+            //    switch (room.RoomType)
+            //    {
+            //        case RoomType.Standard:
+            //            NumericUpDownStandard.Value = room.RoomCount;
+            //            break;
+            //        case RoomType.Deluxe:
+            //            NumericUpDownDeluxe.Value = room.RoomCount;
+            //            break;
+            //        case RoomType.Suite:
+            //            NumericUpDownSuite.Value = room.RoomCount;
+            //            break;
+            //        case RoomType.Family:
+            //            NumericUpDownFamily.Value = room.RoomCount;
+            //            break;
+            //    }
+            //}
         }
 
         private void DateTimePickerCheckin_ValueChanged(object sender, EventArgs e)
@@ -80,13 +80,13 @@ namespace HotelBookingSystem
             // Gather updated room selections
             var updatedRooms = new List<Room>();
             if (NumericUpDownStandard.Value > 0)
-                updatedRooms.Add(new Room { RoomType = RoomType.Standard, NumberOfRooms = (int)NumericUpDownStandard.Value });
+                updatedRooms.Add(new Room { RoomType = RoomType.Standard, RoomCount  = (int)NumericUpDownStandard.Value });
             if (NumericUpDownDeluxe.Value > 0)
-                updatedRooms.Add(new Room { RoomType = RoomType.Deluxe, NumberOfRooms = (int)NumericUpDownDeluxe.Value });
+                updatedRooms.Add(new Room { RoomType = RoomType.Deluxe, RoomCount = (int)NumericUpDownDeluxe.Value });
             if (NumericUpDownSuite.Value > 0)
-                updatedRooms.Add(new Room { RoomType = RoomType.Suite, NumberOfRooms = (int)NumericUpDownSuite.Value });
+                updatedRooms.Add(new Room { RoomType = RoomType.Suite, RoomCount = (int)NumericUpDownSuite.Value });
             if (NumericUpDownFamily.Value > 0)
-                updatedRooms.Add(new Room { RoomType = RoomType.Family, NumberOfRooms = (int)NumericUpDownFamily.Value });
+                updatedRooms.Add(new Room { RoomType = RoomType.Family, RoomCount = (int)NumericUpDownFamily.Value });
 
             // Check that at least one room type is selected
             if (updatedRooms.Count == 0)
@@ -125,65 +125,10 @@ namespace HotelBookingSystem
             bookingToEdit.IsRecurring = CheckBoxRecurring.Checked;
             bookingToEdit.SpecialRequests = TextBoxSpecialRequests.Text;
 
-            //handle recurring field changes
-            // Handle recurring logic
-            if (!originalIsRecurring && bookingToEdit.IsRecurring)
-            {
-                // Generate next 11 recurring bookings
-                for (int i = 1; i <= 11; i++)
-                {
-                    var newBooking = new Booking
-                    {
-                        Guest = new Guest
-                        {
-                            Name = bookingToEdit.Guest.Name,
-                            NIC = bookingToEdit.Guest.NIC,
-                            Address = bookingToEdit.Guest.Address,
-                            MobileNumber = bookingToEdit.Guest.MobileNumber,
-                            Email = bookingToEdit.Guest.Email,
-                            IsResident = bookingToEdit.Guest.IsResident
-                        },
-                        CheckInDate = bookingToEdit.CheckInDate.AddMonths(i),
-                        CheckOutDate = bookingToEdit.CheckOutDate.AddMonths(i),
-                        IsRecurring = true,
-                        SpecialRequests = bookingToEdit.SpecialRequests
-                    };
-                    foreach (var r in bookingToEdit.Rooms)
-                    {
-                        newBooking.Rooms.Add(new Room
-                        {
-                            RoomType = r.RoomType,
-                            NumberOfRooms = r.NumberOfRooms
-                        });
-                    }
-                    PricingManager.UpdateTotalBookingPrice(newBooking);
-                    BookingManager.GetAllBookings().Add(newBooking);
-                }
-            }
-            else if (originalIsRecurring && !bookingToEdit.IsRecurring)
-            {
-                // Remove next 11 recurring bookings for this guest, matching room types & NIC
-                DateTime start = bookingToEdit.CheckInDate.AddMonths(1);
-                DateTime end = bookingToEdit.CheckInDate.AddMonths(11);
+            
 
-                var bookingsToRemove = BookingManager.GetAllBookings()
-                    .Where(b =>
-                        b.BookingId != bookingToEdit.BookingId &&
-                        b.Guest.NIC == bookingToEdit.Guest.NIC &&
-                        b.IsRecurring &&
-                        b.CheckInDate >= start &&
-                        b.CheckInDate <= end)
-                    .ToList();
-
-                foreach (var b in bookingsToRemove)
-                {
-                    BookingManager.GetAllBookings().Remove(b);
-                }
-            }
-
-
-            bookingToEdit.Rooms.Clear();
-            bookingToEdit.Rooms.AddRange(updatedRooms);
+            //bookingToEdit.Rooms.Clear();
+            //bookingToEdit.Rooms.AddRange(updatedRooms);
 
             PricingManager.UpdateTotalBookingPrice(bookingToEdit);
 

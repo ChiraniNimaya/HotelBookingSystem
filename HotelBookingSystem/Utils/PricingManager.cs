@@ -56,14 +56,14 @@ namespace HotelBookingSystem
         {
             float total = 0f;
 
-            for (DateTime day = booking.CheckInDate; day < booking.CheckOutDate; day = day.AddDays(1))
-            {
-                foreach (var room in booking.Rooms)
-                {
-                    float dailyPrice = CalculateRoomRate(room.RoomType, day, booking.Guest.IsResident);
-                    total += dailyPrice * room.NumberOfRooms;
-                }
-            }
+            //for (DateTime day = booking.CheckInDate; day < booking.CheckOutDate; day = day.AddDays(1))
+            //{
+            //    foreach (var room in booking.Rooms)
+            //    {
+            //        float dailyPrice = CalculateRoomRate(room.RoomType, day, booking.Guest.IsResident);
+            //        total += dailyPrice * room.RoomCount;
+            //    }
+            //}
 
             booking.TotalPrice = total;
         }

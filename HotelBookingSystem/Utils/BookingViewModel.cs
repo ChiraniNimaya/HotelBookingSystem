@@ -22,7 +22,7 @@ namespace HotelBookingSystem
         public string SpecialRequests { get; set; }
         public float TotalPrice { get; set; }
 
-        public string RoomSummary => string.Join(", ", Rooms.Select(r => $"{r.RoomType} x{r.NumberOfRooms}"));
+        public string RoomSummary => string.Join(", ", Rooms.Select(r => $"{r.RoomType} x{r.RoomCount}"));
 
         public BookingViewModel(Booking booking)
         {
@@ -35,7 +35,7 @@ namespace HotelBookingSystem
             IsResident = booking.Guest.IsResident;
             CheckInDate = booking.CheckInDate;
             CheckOutDate = booking.CheckOutDate;
-            Rooms = booking.Rooms;
+            //Rooms = booking.Rooms;
             IsRecurring = booking.IsRecurring;
             SpecialRequests = string.Join(", ", booking.SpecialRequests);
             TotalPrice = booking.TotalPrice;
