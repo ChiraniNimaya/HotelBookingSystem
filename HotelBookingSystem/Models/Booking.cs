@@ -17,7 +17,7 @@ namespace HotelBookingSystem
 
         public int GuestId { get; set; }
         public List<int> RoomIds { get; set; }
-
+        public Dictionary<RoomType, int> RoomInfo { get; set; }
         public float TotalPrice { get; set; }
 
         public Booking(int bookingId, Guest guest, DateTime checkIn, DateTime checkOut, bool isRecurring, string specialRequests, List<int> roomIds)

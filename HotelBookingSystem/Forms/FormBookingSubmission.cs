@@ -154,11 +154,11 @@ namespace HotelBookingSystem
             if (selectedStandard > 0)
                 roomInfo.Add(RoomType.Standard, selectedStandard );
             if (selectedDeluxe > 0)
-                roomInfo.Add(RoomType.Deluxe, selectedStandard);
+                roomInfo.Add(RoomType.Deluxe, selectedDeluxe);
             if (selectedSuite > 0)
-                roomInfo.Add(RoomType.Suite, selectedStandard);
+                roomInfo.Add(RoomType.Suite, selectedSuite);
             if (selectedFamily > 0)
-                roomInfo.Add(RoomType.Family, selectedStandard);
+                roomInfo.Add(RoomType.Family, selectedFamily);
 
             string specialRequests = string.Join(", ", ListBoxSpecialRequests.Text.Split('\n'));
 

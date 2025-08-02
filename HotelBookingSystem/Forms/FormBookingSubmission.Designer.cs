@@ -397,7 +397,7 @@
             // NumericUpDownStandard
             // 
             NumericUpDownStandard.Location = new Point(321, 170);
-            NumericUpDownStandard.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
+            NumericUpDownStandard.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
             NumericUpDownStandard.Name = "NumericUpDownStandard";
             NumericUpDownStandard.Size = new Size(59, 30);
             NumericUpDownStandard.TabIndex = 18;
