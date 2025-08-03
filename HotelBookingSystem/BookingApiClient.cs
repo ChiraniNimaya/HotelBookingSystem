@@ -116,6 +116,33 @@ namespace HotelBookingSystem
                 return false;
             }
         }
+
+        // Get booking by ID
+        public async Task<Booking> GetBookingByIdAsync(int bookingId)
+        {
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<Booking>($"api/booking/{bookingId}");
+            }
+            catch (HttpRequestException)
+            {
+                return null;
+            }
+        }
+
+        // Get bookings by NIC
+        public async Task<List<Booking>> GetBookingsByNicAsync(string nic)
+        {
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<List<Booking>>($"api/booking/nic/{nic}");
+            }
+            catch (HttpRequestException)
+            {
+                return null;
+            }
+        }
+
     }
 
 }

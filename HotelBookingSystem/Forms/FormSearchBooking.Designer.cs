@@ -45,7 +45,7 @@
             ButtonSearchNIC.TabIndex = 0;
             ButtonSearchNIC.Text = "Search by NIC";
             ButtonSearchNIC.UseVisualStyleBackColor = true;
-            ButtonSearchNIC.Click += ButtonSearchNIC_Click;
+            ButtonSearchNIC.Click += ButtonSearchNIC_ClickAsync;
             // 
             // ButtonSearchBookingId
             // 
@@ -55,7 +55,7 @@
             ButtonSearchBookingId.TabIndex = 1;
             ButtonSearchBookingId.Text = "Search by Booking ID";
             ButtonSearchBookingId.UseVisualStyleBackColor = true;
-            ButtonSearchBookingId.Click += ButtonSearchBookingId_Click;
+            ButtonSearchBookingId.Click += ButtonSearchBookingId_ClickAsync;
             // 
             // TextBoxSearchNIC
             // 

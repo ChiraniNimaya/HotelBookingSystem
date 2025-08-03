@@ -8,7 +8,8 @@ namespace HotelBookingSystem
 {
     public class Booking
     {
-        public int BookingId { get; private set; }
+        public Booking() { }
+        public int BookingId { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
         public bool IsRecurring { get; set; }
@@ -20,16 +21,6 @@ namespace HotelBookingSystem
         public Dictionary<RoomType, int> RoomInfo { get; set; }
         public float TotalPrice { get; set; }
 
-        public Booking(int bookingId, Guest guest, DateTime checkIn, DateTime checkOut, bool isRecurring, string specialRequests, List<int> roomIds)
-        {
-            BookingId = bookingId;
-            Guest = guest;
-            CheckInDate = checkIn;
-            CheckOutDate = checkOut;
-            IsRecurring = isRecurring;
-            SpecialRequests = specialRequests;
-            RoomIds = roomIds;
-        }
     }
 }
 

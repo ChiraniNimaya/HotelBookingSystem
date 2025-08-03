@@ -12,9 +12,13 @@ namespace HotelBookingSystem
 {
     public partial class FormSearchBooking : Form
     {
+        private readonly BookingApiClient apiClient;
         public FormSearchBooking()
         {
             InitializeComponent();
+            apiClient = new BookingApiClient();
+
+
         }
 
         private void FormSearchBooking_Load(object sender, EventArgs e)
@@ -33,7 +37,7 @@ namespace HotelBookingSystem
             ButtonSearchBookingId.Enabled = !string.IsNullOrWhiteSpace(TextBoxSearchBookingId.Text);
         }
 
-        private void ButtonSearchBookingId_Click(object sender, EventArgs e)
+        private async void ButtonSearchBookingId_ClickAsync(object sender, EventArgs e)
         {
             if (!int.TryParse(TextBoxSearchBookingId.Text.Trim(), out int bookingId))
             {
@@ -42,10 +46,11 @@ namespace HotelBookingSystem
                 return;
             }
 
-            var exists = BookingManager.GetAllBookings().Any(b => b.BookingId == bookingId);
-            if (exists)
+            var booking = await apiClient.GetBookingByIdAsync(bookingId);
+
+            if (booking != null)
             {
-                FormSearchView formSearchView = new FormSearchView(bookingId);
+                FormSearchView formSearchView = new FormSearchView(booking);
                 formSearchView.ShowDialog();
             }
             else
@@ -54,14 +59,15 @@ namespace HotelBookingSystem
             }
         }
 
-        private void ButtonSearchNIC_Click(object sender, EventArgs e)
+        private async void ButtonSearchNIC_ClickAsync(object sender, EventArgs e)
         {
             string nic = TextBoxSearchNIC.Text.Trim();
 
-            var exists = BookingManager.GetAllBookings().Any(b => b.Guest.NIC.Equals(nic, StringComparison.OrdinalIgnoreCase));
-            if (exists)
+            var bookings = await apiClient.GetBookingsByNicAsync(nic);
+
+            if (bookings != null && bookings.Any())
             {
-                FormSearchView formSearchView = new FormSearchView(nic);
+                FormSearchView formSearchView = new FormSearchView(bookings);
                 formSearchView.ShowDialog();
             }
             else

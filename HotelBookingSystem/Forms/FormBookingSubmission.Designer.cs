@@ -370,7 +370,7 @@
             // NumericUpDownFamily
             // 
             NumericUpDownFamily.Location = new Point(491, 215);
-            NumericUpDownFamily.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
+            NumericUpDownFamily.Maximum = new decimal(new int[] { 8, 0, 0, 0 });
             NumericUpDownFamily.Name = "NumericUpDownFamily";
             NumericUpDownFamily.Size = new Size(59, 30);
             NumericUpDownFamily.TabIndex = 21;
@@ -379,7 +379,7 @@
             // NumericUpDownSuite
             // 
             NumericUpDownSuite.Location = new Point(491, 170);
-            NumericUpDownSuite.Maximum = new decimal(new int[] { 4, 0, 0, 0 });
+            NumericUpDownSuite.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
             NumericUpDownSuite.Name = "NumericUpDownSuite";
             NumericUpDownSuite.Size = new Size(59, 30);
             NumericUpDownSuite.TabIndex = 20;
@@ -388,7 +388,7 @@
             // NumericUpDownDeluxe
             // 
             NumericUpDownDeluxe.Location = new Point(321, 215);
-            NumericUpDownDeluxe.Maximum = new decimal(new int[] { 7, 0, 0, 0 });
+            NumericUpDownDeluxe.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
             NumericUpDownDeluxe.Name = "NumericUpDownDeluxe";
             NumericUpDownDeluxe.Size = new Size(59, 30);
             NumericUpDownDeluxe.TabIndex = 19;

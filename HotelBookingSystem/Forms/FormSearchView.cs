@@ -13,42 +13,27 @@ namespace HotelBookingSystem
 {
     public partial class FormSearchView : Form
     {
-        private readonly string? searchNIC;
-        private readonly int? searchBookingId;
+        private readonly List<Booking> searchBooking;
 
-        public FormSearchView(string nic)
+        public FormSearchView(Booking booking)
         {
             InitializeComponent();
-            searchNIC = nic;
+            searchBooking = booking != null ? new List<Booking> { booking } : new List<Booking>();
         }
-
-        public FormSearchView(int bookingId)
+        
+        public FormSearchView(List<Booking> booking)
         {
             InitializeComponent();
-            searchBookingId = bookingId;
+            searchBooking = booking;
         }
 
         private void FormSearchView_Load(object sender, EventArgs e)
-        {
-            List<Booking> results = new();
+        {            
 
-            if (searchBookingId.HasValue)
-            {
-                results = BookingManager.GetAllBookings()
-                    .Where(b => b.BookingId == searchBookingId.Value)
-                    .ToList();
-            }
-            else if (!string.IsNullOrWhiteSpace(searchNIC))
-            {
-                results = BookingManager.GetAllBookings()
-                    .Where(b => b.Guest.NIC.Equals(searchNIC, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            }
-
-            if (results.Any())
+            if (searchBooking.Any())
             {
                 SetupDataGridView();
-                var viewModelList = results.Select(b => new BookingViewModel(b)).ToList();
+                var viewModelList = searchBooking.Select(b => new BookingViewModel(b)).ToList();
                 DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(viewModelList);
             }
             else
@@ -104,50 +89,50 @@ namespace HotelBookingSystem
                 Booking selectedBooking = BookingManager.GetAllBookings().FirstOrDefault(b => b.BookingId == viewModel.BookingId);
 
 
-                // Handle Delete Booking button
-                if (column.HeaderText == "Delete Booking")
-                {
-                    var confirm = MessageBox.Show(
-                        $"Are you sure you want to delete booking ID {selectedBooking.BookingId}?",
-                        "Confirm Delete",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Warning
-                    );
+                //// Handle Delete Booking button
+                //if (column.HeaderText == "Delete Booking")
+                //{
+                //    var confirm = MessageBox.Show(
+                //        $"Are you sure you want to delete booking ID {selectedBooking.BookingId}?",
+                //        "Confirm Delete",
+                //        MessageBoxButtons.YesNo,
+                //        MessageBoxIcon.Warning
+                //    );
 
-                    if (confirm == DialogResult.Yes)
-                    {
-                        BookingManager.GetAllBookings().Remove(selectedBooking); // Remove from main list
+                //    if (confirm == DialogResult.Yes)
+                //    {
+                //        BookingManager.GetAllBookings().Remove(selectedBooking); // Remove from main list
 
-                        // Refresh DataGridView
-                        var updatedList = BookingManager.GetAllBookings()
-                            .Where(b =>
-                                (searchBookingId.HasValue && b.BookingId == searchBookingId.Value) ||
-                                (!string.IsNullOrWhiteSpace(searchNIC) && b.Guest.NIC.Equals(searchNIC, StringComparison.OrdinalIgnoreCase))
-                            )
-                            .ToList();
+                //        // Refresh DataGridView
+                //        var updatedList = BookingManager.GetAllBookings()
+                //            .Where(b =>
+                //                (searchBookingId.HasValue && b.BookingId == searchBookingId.Value) ||
+                //                (!string.IsNullOrWhiteSpace(searchNIC) && b.Guest.NIC.Equals(searchNIC, StringComparison.OrdinalIgnoreCase))
+                //            )
+                //            .ToList();
 
-                        var viewModelList = updatedList.Select(b => new BookingViewModel(b)).ToList();
-                        DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(viewModelList);
+                //        var viewModelList = updatedList.Select(b => new BookingViewModel(b)).ToList();
+                //        DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(viewModelList);
 
-                        MessageBox.Show("Booking deleted successfully.");
-                    }
-                }
-                if (column.HeaderText == "Edit Booking")
-                {
-                    FormEditBooking formEditBooking = new FormEditBooking(selectedBooking);
-                    if (formEditBooking.ShowDialog() == DialogResult.OK)
-                    {
-                        var updatedList = BookingManager.GetAllBookings()
-                            .Where(b =>
-                                (searchBookingId.HasValue && b.BookingId == searchBookingId.Value) ||
-                                (!string.IsNullOrWhiteSpace(searchNIC) && b.Guest.NIC.Equals(searchNIC, StringComparison.OrdinalIgnoreCase))
-                            )
-                            .Select(b => new BookingViewModel(b))
-                            .ToList();
+                //        MessageBox.Show("Booking deleted successfully.");
+                //    }
+                //}
+                //if (column.HeaderText == "Edit Booking")
+                //{
+                //    FormEditBooking formEditBooking = new FormEditBooking(selectedBooking);
+                //    if (formEditBooking.ShowDialog() == DialogResult.OK)
+                //    {
+                //        var updatedList = BookingManager.GetAllBookings()
+                //            .Where(b =>
+                //                (searchBookingId.HasValue && b.BookingId == searchBookingId.Value) ||
+                //                (!string.IsNullOrWhiteSpace(searchNIC) && b.Guest.NIC.Equals(searchNIC, StringComparison.OrdinalIgnoreCase))
+                //            )
+                //            .Select(b => new BookingViewModel(b))
+                //            .ToList();
 
-                        DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(updatedList);
-                    }
-                }
+                //        DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(updatedList);
+                //    }
+                //}
             }
 
         }
