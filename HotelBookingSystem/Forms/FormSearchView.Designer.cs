@@ -35,17 +35,17 @@
             // DataGridViewBookings
             // 
             DataGridViewBookings.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            DataGridViewBookings.Location = new Point(75, 52);
+            DataGridViewBookings.Location = new Point(48, 37);
             DataGridViewBookings.Name = "DataGridViewBookings";
             DataGridViewBookings.RowHeadersWidth = 51;
-            DataGridViewBookings.Size = new Size(1231, 313);
+            DataGridViewBookings.Size = new Size(1696, 590);
             DataGridViewBookings.TabIndex = 0;
             // 
             // FormSearchView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1382, 450);
+            ClientSize = new Size(1786, 689);
             Controls.Add(DataGridViewBookings);
             Name = "FormSearchView";
             Text = "Search Results";

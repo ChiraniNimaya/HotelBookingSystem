@@ -17,12 +17,12 @@ namespace HotelBookingSystem
         public bool IsResident { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
-        public List<Room> Rooms { get; } = new List<Room>();
+        public Dictionary<RoomType, int> RoomInfo { get; set; } = new Dictionary<RoomType, int>();
         public bool IsRecurring { get; set; }
         public string SpecialRequests { get; set; }
         public float TotalPrice { get; set; }
 
-        public string RoomSummary => string.Join(", ", Rooms.Select(r => $"{r.RoomType} x{r.RoomCount}"));
+        public string RoomSummary => string.Join(", ", RoomInfo.Select(r => $"{r.Key} x{r.Value}"));
 
         public BookingViewModel(Booking booking)
         {
@@ -35,7 +35,7 @@ namespace HotelBookingSystem
             IsResident = booking.Guest.IsResident;
             CheckInDate = booking.CheckInDate;
             CheckOutDate = booking.CheckOutDate;
-            //Rooms = booking.Rooms;
+            RoomInfo = booking.RoomInfo;
             IsRecurring = booking.IsRecurring;
             SpecialRequests = string.Join(", ", booking.SpecialRequests);
             TotalPrice = booking.TotalPrice;

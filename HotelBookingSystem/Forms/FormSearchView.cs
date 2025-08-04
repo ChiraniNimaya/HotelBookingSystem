@@ -13,18 +13,26 @@ namespace HotelBookingSystem
 {
     public partial class FormSearchView : Form
     {
+        private readonly BookingApiClient apiClient;
         private readonly List<Booking> searchBooking;
 
-        public FormSearchView(Booking booking)
+        public string? currentSearchNic;
+        public int? currentSearchBookingId;
+
+        public FormSearchView(Booking booking, int bookingId)
         {
             InitializeComponent();
+            apiClient = new BookingApiClient();
             searchBooking = booking != null ? new List<Booking> { booking } : new List<Booking>();
+            currentSearchBookingId = bookingId;
         }
         
-        public FormSearchView(List<Booking> booking)
+        public FormSearchView(List<Booking> booking, string nic)
         {
             InitializeComponent();
+            apiClient = new BookingApiClient();
             searchBooking = booking;
+            currentSearchNic = nic;
         }
 
         private void FormSearchView_Load(object sender, EventArgs e)
@@ -46,6 +54,9 @@ namespace HotelBookingSystem
         private void SetupDataGridView()
         {
             DataGridViewBookings.Columns.Clear();
+            DataGridViewBookings.AutoGenerateColumns = false;
+            DataGridViewBookings.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells; // Enable auto row height
+
 
             DataGridViewBookings.AutoGenerateColumns = false;
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Booking ID", DataPropertyName = "BookingId" });
@@ -53,9 +64,9 @@ namespace HotelBookingSystem
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "NIC", DataPropertyName = "NIC" });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Check-In Date", DataPropertyName = "CheckInDate" });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Check-Out Date", DataPropertyName = "CheckOutDate" });
-            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Room(s)", DataPropertyName = "RoomSummary" });
+            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Room(s)", DataPropertyName = "RoomSummary", Width = 250, DefaultCellStyle = new DataGridViewCellStyle { WrapMode = DataGridViewTriState.True } });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Recurring Stay?", DataPropertyName = "IsRecurring" });
-            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Special Requests", DataPropertyName = "SpecialRequests" });
+            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Special Requests", DataPropertyName = "SpecialRequests", Width = 375, DefaultCellStyle = new DataGridViewCellStyle { WrapMode = DataGridViewTriState.True } });
 
 
             var editButton = new DataGridViewButtonColumn
@@ -78,63 +89,132 @@ namespace HotelBookingSystem
             DataGridViewBookings.CellClick += DataGridViewBookings_CellClick;
         }
 
-        private void DataGridViewBookings_CellClick(object? sender, DataGridViewCellEventArgs e)
+        private async void DataGridViewBookings_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            try
             {
+                // Ignore header or invalid clicks
+                if (e.RowIndex < 0 || e.ColumnIndex < 0)
+                    return;
+
                 var column = DataGridViewBookings.Columns[e.ColumnIndex];
 
                 // Get the booking for the clicked row
                 var viewModel = (BookingViewModel)DataGridViewBookings.Rows[e.RowIndex].DataBoundItem;
-                Booking selectedBooking = BookingManager.GetAllBookings().FirstOrDefault(b => b.BookingId == viewModel.BookingId);
+                Booking selectedBooking = searchBooking.FirstOrDefault(b => b.BookingId == viewModel.BookingId);
 
 
-                //// Handle Delete Booking button
-                //if (column.HeaderText == "Delete Booking")
-                //{
-                //    var confirm = MessageBox.Show(
-                //        $"Are you sure you want to delete booking ID {selectedBooking.BookingId}?",
-                //        "Confirm Delete",
-                //        MessageBoxButtons.YesNo,
-                //        MessageBoxIcon.Warning
-                //    );
+                // DELETE logic
+                if (column.HeaderText == "Delete Booking")
+                {
+                    var confirm = MessageBox.Show(
+                        $"Are you sure you want to delete booking ID {selectedBooking.BookingId}?",
+                        "Confirm Delete",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
 
-                //    if (confirm == DialogResult.Yes)
-                //    {
-                //        BookingManager.GetAllBookings().Remove(selectedBooking); // Remove from main list
+                    if (confirm == DialogResult.Yes)
+                    {
+                        // Disable the grid to prevent further clicks during deletion
+                        DataGridViewBookings.Enabled = false;
 
-                //        // Refresh DataGridView
-                //        var updatedList = BookingManager.GetAllBookings()
-                //            .Where(b =>
-                //                (searchBookingId.HasValue && b.BookingId == searchBookingId.Value) ||
-                //                (!string.IsNullOrWhiteSpace(searchNIC) && b.Guest.NIC.Equals(searchNIC, StringComparison.OrdinalIgnoreCase))
-                //            )
-                //            .ToList();
+                        try
+                        {
+                            // Call API to delete
+                            bool success = await apiClient.DeleteBookingAsync(selectedBooking.BookingId);
 
-                //        var viewModelList = updatedList.Select(b => new BookingViewModel(b)).ToList();
-                //        DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(viewModelList);
+                            if (success)
+                            {
+                                // Refresh the booking data in place
+                                await RefreshBookingData();
 
-                //        MessageBox.Show("Booking deleted successfully.");
-                //    }
-                //}
-                //if (column.HeaderText == "Edit Booking")
-                //{
-                //    FormEditBooking formEditBooking = new FormEditBooking(selectedBooking);
-                //    if (formEditBooking.ShowDialog() == DialogResult.OK)
-                //    {
-                //        var updatedList = BookingManager.GetAllBookings()
-                //            .Where(b =>
-                //                (searchBookingId.HasValue && b.BookingId == searchBookingId.Value) ||
-                //                (!string.IsNullOrWhiteSpace(searchNIC) && b.Guest.NIC.Equals(searchNIC, StringComparison.OrdinalIgnoreCase))
-                //            )
-                //            .Select(b => new BookingViewModel(b))
-                //            .ToList();
+                                MessageBox.Show("Booking deleted successfully.",
+                                              "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"An error occurred while deleting booking:\n\n{ex}",
+                                           "Delete Booking Error",
+                                           MessageBoxButtons.OK,
+                                           MessageBoxIcon.Error);
+                        }
+                        finally
+                        {
+                            // Re-enable the grid (though we're closing the form anyway)
+                            DataGridViewBookings.Enabled = true;
+                        }
+                    }
+                }
+                if (column.HeaderText == "Edit Booking")
+                {
+                    var confirm = MessageBox.Show(
+                        $"Are you sure you want to edit booking ID {selectedBooking.BookingId}?",
+                        "Confirm Edit",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
 
-                //        DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(updatedList);
-                //    }
-                //}
+                    if (confirm == DialogResult.Yes)
+                    {
+                        var selectedUpdatedBookings = await apiClient.GetBookingByIdAsync(selectedBooking.BookingId);
+                        FormEditBooking formEditBooking = new FormEditBooking(selectedUpdatedBookings);
+                        if (formEditBooking.ShowDialog() == DialogResult.OK)
+                        {
+                            await RefreshBookingData();
+                        }
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                // Log the exception and show a user-friendly message
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+                // Re-enable the grid if it was disabled
+                DataGridViewBookings.Enabled = true;
+            }
+        }
+
+        // Helper method to refresh the grid data
+        private async Task RefreshBookingData()
+        {
+            try
+            {
+                List<Booking> updatedBookings = new List<Booking>();
+
+                if (!string.IsNullOrEmpty(currentSearchNic))
+                {
+                    updatedBookings = await apiClient.GetBookingsByNicAsync(currentSearchNic);
+                }
+                else if (currentSearchBookingId.HasValue)
+                {
+                    var singleBooking = await apiClient.GetBookingByIdAsync(currentSearchBookingId.Value);
+                    if (singleBooking != null)
+                        updatedBookings.Add(singleBooking);
+                }
+
+                // Convert to BookingViewModel list
+                var bookingViewModels = updatedBookings.Select(b => new BookingViewModel(b)).ToList();
+
+                // Update the DataSource
+                DataGridViewBookings.DataSource = null; // Clear first to force refresh
+                DataGridViewBookings.DataSource = bookingViewModels;
+
+                // Check if no bookings remain
+                if (!bookingViewModels.Any())
+                {
+                    MessageBox.Show("No more matching bookings found.",
+                                  "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error refreshing data: {ex.Message}", "Error",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

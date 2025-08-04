@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HotelBookingSystem.DTOs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,14 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace HotelBookingSystem
 {
     public partial class FormEditBooking : Form
     {
         private Booking bookingToEdit;
-        private bool originalIsRecurring;
-
+        private readonly BookingApiClient apiClient;
         public FormEditBooking(Booking booking)
         {
             InitializeComponent();
@@ -39,30 +40,30 @@ namespace HotelBookingSystem
             //Booking details
             TextBoxBookingId.Text = bookingToEdit.BookingId.ToString();
             CheckBoxRecurring.Checked = bookingToEdit.IsRecurring;
-            originalIsRecurring = bookingToEdit.IsRecurring;
             TextBoxSpecialRequests.Text = bookingToEdit.SpecialRequests;
 
             TextBoxBookingId.ReadOnly = true;
+            CheckBoxRecurring.Enabled = false;
 
             // Room selection: assign values to numeric counters
-            //foreach (var room in bookingToEdit.Rooms)
-            //{
-            //    switch (room.RoomType)
-            //    {
-            //        case RoomType.Standard:
-            //            NumericUpDownStandard.Value = room.RoomCount;
-            //            break;
-            //        case RoomType.Deluxe:
-            //            NumericUpDownDeluxe.Value = room.RoomCount;
-            //            break;
-            //        case RoomType.Suite:
-            //            NumericUpDownSuite.Value = room.RoomCount;
-            //            break;
-            //        case RoomType.Family:
-            //            NumericUpDownFamily.Value = room.RoomCount;
-            //            break;
-            //    }
-            //}
+            foreach (var roomInfo in bookingToEdit.RoomInfo)
+            {
+                switch (roomInfo.Key)
+                {
+                    case RoomType.Standard:
+                        NumericUpDownStandard.Value = roomInfo.Value;
+                        break;
+                    case RoomType.Deluxe:
+                        NumericUpDownDeluxe.Value = roomInfo.Value;
+                        break;
+                    case RoomType.Suite:
+                        NumericUpDownSuite.Value = roomInfo.Value;
+                        break;
+                    case RoomType.Family:
+                        NumericUpDownFamily.Value = roomInfo.Value;
+                        break;
+                }
+            }
         }
 
         private void DateTimePickerCheckin_ValueChanged(object sender, EventArgs e)
@@ -75,66 +76,57 @@ namespace HotelBookingSystem
             }
         }
 
-        private void ButtonSave_Click(object sender, EventArgs e)
+        private async void ButtonSave_Click(object sender, EventArgs e)
         {
             // Gather updated room selections
-            var updatedRooms = new List<Room>();
+            Dictionary<RoomType, int> updatedRoomInfo = new Dictionary<RoomType, int>();
             if (NumericUpDownStandard.Value > 0)
-                updatedRooms.Add(new Room { RoomType = RoomType.Standard, RoomCount  = (int)NumericUpDownStandard.Value });
+                updatedRoomInfo.Add(RoomType.Standard, (int)NumericUpDownStandard.Value );
             if (NumericUpDownDeluxe.Value > 0)
-                updatedRooms.Add(new Room { RoomType = RoomType.Deluxe, RoomCount = (int)NumericUpDownDeluxe.Value });
+                updatedRoomInfo.Add(RoomType.Deluxe, (int)NumericUpDownDeluxe.Value);
             if (NumericUpDownSuite.Value > 0)
-                updatedRooms.Add(new Room { RoomType = RoomType.Suite, RoomCount = (int)NumericUpDownSuite.Value });
+                updatedRoomInfo.Add(RoomType.Suite, (int)NumericUpDownSuite.Value);
             if (NumericUpDownFamily.Value > 0)
-                updatedRooms.Add(new Room { RoomType = RoomType.Family, RoomCount = (int)NumericUpDownFamily.Value });
+                updatedRoomInfo.Add(RoomType.Family, (int)NumericUpDownFamily.Value);
 
             // Check that at least one room type is selected
-            if (updatedRooms.Count == 0)
+            if (updatedRoomInfo.Count == 0)
             {
                 MessageBox.Show("Please select at least one room type with quantity greater than zero.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            
-            // Check availability using BookingManager
-            bool roomsAvailable = BookingManager.AreRoomsAvailable(
-                updatedRooms,
-                DateTimePickerCheckin.Value,
-                DateTimePickerCheckout.Value,
-                excludeBookingId: bookingToEdit.BookingId
-            );
 
-            if (!roomsAvailable)
-            {
-                MessageBox.Show("The selected rooms are not available for the given date range.", "Room Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            
             // Update guest details
-            bookingToEdit.Guest.Name = TextBoxGuestName.Text.ToString();
-            bookingToEdit.Guest.NIC = TextBoxNIC.Text;
-            bookingToEdit.Guest.Address = TextBoxAddress.Text;
-            bookingToEdit.Guest.MobileNumber = TextBoxMobileNumber.Text;
-            bookingToEdit.Guest.Email = TextBoxEmail.Text;
-            bookingToEdit.Guest.IsResident = CheckBoxResident.Checked;
+            GuestDTO guestDto = new GuestDTO();
+            guestDto.Name = TextBoxGuestName.Text.ToString();
+            guestDto.NIC = TextBoxNIC.Text;
+            guestDto.Address = TextBoxAddress.Text;
+            guestDto.MobileNumber = TextBoxMobileNumber.Text;
+            guestDto.Email = TextBoxEmail.Text;
+            guestDto.IsResident = CheckBoxResident.Checked;
 
-            //Update dates
-            bookingToEdit.CheckInDate = DateTimePickerCheckin.Value;
-            bookingToEdit.CheckOutDate = DateTimePickerCheckout.Value;
+            BookingDTO newBookingDto = new BookingDTO();
+            newBookingDto.BookingId = bookingToEdit.BookingId;
+            newBookingDto.CheckInDate = DateTimePickerCheckin.Value;
+            newBookingDto.CheckOutDate = DateTimePickerCheckout.Value;
+            newBookingDto.IsRecurring = bookingToEdit.IsRecurring;
 
-            //Update booking details
-            bookingToEdit.IsRecurring = CheckBoxRecurring.Checked;
-            bookingToEdit.SpecialRequests = TextBoxSpecialRequests.Text;
+            string specialRequests = string.Join(", ", TextBoxSpecialRequests.Text.Split('\n'));
+            newBookingDto.SpecialRequests = specialRequests;
 
-            
+            bookingToEdit.RoomInfo.Clear();
+            newBookingDto.RoomInfo = updatedRoomInfo;
 
-            //bookingToEdit.Rooms.Clear();
-            //bookingToEdit.Rooms.AddRange(updatedRooms);
+            newBookingDto.GuestDto = guestDto;
 
-            PricingManager.UpdateTotalBookingPrice(bookingToEdit);
-
-            MessageBox.Show("Booking updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            var apiClient = new BookingApiClient();
+            bool result = await apiClient.UpdateBookingAsync(bookingToEdit.BookingId, newBookingDto);
+            if (result)
+            {
+                MessageBox.Show("Booking updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
         }
     }
 }

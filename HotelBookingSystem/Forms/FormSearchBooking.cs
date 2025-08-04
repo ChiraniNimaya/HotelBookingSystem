@@ -50,7 +50,7 @@ namespace HotelBookingSystem
 
             if (booking != null)
             {
-                FormSearchView formSearchView = new FormSearchView(booking);
+                FormSearchView formSearchView = new FormSearchView(booking, bookingId);
                 formSearchView.ShowDialog();
             }
             else
@@ -67,7 +67,7 @@ namespace HotelBookingSystem
 
             if (bookings != null && bookings.Any())
             {
-                FormSearchView formSearchView = new FormSearchView(bookings);
+                FormSearchView formSearchView = new FormSearchView(bookings, nic);
                 formSearchView.ShowDialog();
             }
             else

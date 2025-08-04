@@ -75,7 +75,9 @@ namespace HotelBookingSystem
                     {
                         // Default success message
                         MessageBox.Show(
-                            $"Booking created!\n\nBooking ID: {success.BookingId}\nTotal Price: {success.TotalPrice:C}",
+                            $"Booking created!\n\nBooking ID: {success.BookingId}\n" + 
+                            $"Total Price: {success.TotalPrice:C}" + 
+                            $"Rooms allocated : {success.RoomIds}",
                             "Success",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information
@@ -142,6 +144,102 @@ namespace HotelBookingSystem
                 return null;
             }
         }
+
+        // Get bookings by Week
+        public async Task<List<Booking>> GetBookingsByWeekAsync(DateTime date)
+        {
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<List<Booking>>($"api/booking/week/{date}");
+            }
+            catch (HttpRequestException)
+            {
+                return null;
+            }
+        }
+
+        // Delete selected booking 
+        public async Task<bool> DeleteBookingAsync(int bookingId)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"api/booking/{bookingId}");
+                return response.IsSuccessStatusCode; 
+            }
+            catch (HttpRequestException)
+            {
+                return false;
+            }
+        }
+
+        // Update selected booking
+        public async Task<bool> UpdateBookingAsync(int bookingId, BookingDTO dto)
+        {
+            try
+            {
+                
+                var response = await _httpClient.PutAsJsonAsync($"api/booking/{bookingId}", dto);
+
+                if (response.IsSuccessStatusCode) // Success (200 OK)
+                {
+                    // Deserialize to BookingSuccessResponse
+                    var success = await response.Content.ReadFromJsonAsync<BookingSuccessResponse>();
+
+                    if (success == null)
+                    {
+                        MessageBox.Show("Booking updated successfully, but no details were returned.",
+                                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return true;
+                    }
+
+                    // Standard success message
+                    MessageBox.Show(
+                        $"Booking updated!\n\nBooking ID: {success.BookingId}\n" +
+                        $"Total Price: {success.TotalPrice:C}\n" +
+                        $"Rooms allocated: {string.Join(", ", success.RoomIds)}",
+                        "Success",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                    
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) // Rooms unavailable
+                {
+                    var errorContent = await response.Content.ReadFromJsonAsync<BookingErrorResponse>();
+
+                    if (errorContent == null)
+                    {
+                        MessageBox.Show("Booking update failed but server didn't return an error message.",
+                                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+
+                    string msg = $"{errorContent.Message}\n\n";
+                    foreach (var kvp in errorContent.UnavailableRooms)
+                    {
+                        msg += $"{kvp.Key}: {kvp.Value} not available\n";
+                    }
+
+                    MessageBox.Show(msg, "Booking Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else  // Unexpected server error
+                {
+                    string serverMsg = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Error: {response.StatusCode}\n{serverMsg}", "Server Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}",
+                                "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+
+
 
     }
 
