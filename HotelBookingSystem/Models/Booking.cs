@@ -14,7 +14,6 @@ namespace HotelBookingSystem
         public DateTime CheckOutDate { get; set; }
         public bool IsRecurring { get; set; }
         public string? SpecialRequests { get; set; }
-        public Guest Guest { get; set; }
 
         public int GuestId { get; set; }
         public List<int> RoomIds { get; set; }

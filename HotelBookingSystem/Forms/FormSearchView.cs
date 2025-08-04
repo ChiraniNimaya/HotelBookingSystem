@@ -13,8 +13,10 @@ namespace HotelBookingSystem
 {
     public partial class FormSearchView : Form
     {
-        private readonly BookingApiClient apiClient;
+        private readonly BookingApiClient bookingApiClient;
+        private readonly GuestApiClient guestApiClient;
         private readonly List<Booking> searchBooking;
+        private Guest guest;
 
         public string? currentSearchNic;
         public int? currentSearchBookingId;
@@ -22,7 +24,8 @@ namespace HotelBookingSystem
         public FormSearchView(Booking booking, int bookingId)
         {
             InitializeComponent();
-            apiClient = new BookingApiClient();
+            bookingApiClient = new BookingApiClient();
+            guestApiClient = new GuestApiClient();
             searchBooking = booking != null ? new List<Booking> { booking } : new List<Booking>();
             currentSearchBookingId = bookingId;
         }
@@ -30,18 +33,19 @@ namespace HotelBookingSystem
         public FormSearchView(List<Booking> booking, string nic)
         {
             InitializeComponent();
-            apiClient = new BookingApiClient();
+            bookingApiClient = new BookingApiClient();
+            guestApiClient = new GuestApiClient();
             searchBooking = booking;
             currentSearchNic = nic;
         }
 
-        private void FormSearchView_Load(object sender, EventArgs e)
-        {            
-
+        private async void FormSearchView_Load(object sender, EventArgs e)
+        {
+            guest = await guestApiClient.GetGuestByIdAsync(searchBooking.FirstOrDefault().GuestId);
             if (searchBooking.Any())
             {
                 SetupDataGridView();
-                var viewModelList = searchBooking.Select(b => new BookingViewModel(b)).ToList();
+                var viewModelList = searchBooking.Select(b => new BookingViewModel(b, guest)).ToList();
                 DataGridViewBookings.DataSource = new BindingList<BookingViewModel>(viewModelList);
             }
             else
@@ -122,16 +126,21 @@ namespace HotelBookingSystem
                         try
                         {
                             // Call API to delete
-                            bool success = await apiClient.DeleteBookingAsync(selectedBooking.BookingId);
-
-                            if (success)
-                            {
-                                // Refresh the booking data in place
-                                await RefreshBookingData();
-
-                                MessageBox.Show("Booking deleted successfully.",
-                                              "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            int guestId = await bookingApiClient.DeleteBookingAsync(selectedBooking.BookingId);
+                            if (guestId != 0) 
+                            { 
+                                bool success = await guestApiClient.DeleteGuestAsync(guestId);
+                                if (!success)
+                                    MessageBox.Show("Unable to delete guest information.",
+                                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
+                            
+                            // Refresh the booking data in place
+                            await RefreshBookingData();
+
+                            MessageBox.Show("Booking deleted successfully.",
+                                            "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            
                         }
                         catch (Exception ex)
                         {
@@ -158,7 +167,7 @@ namespace HotelBookingSystem
 
                     if (confirm == DialogResult.Yes)
                     {
-                        var selectedUpdatedBookings = await apiClient.GetBookingByIdAsync(selectedBooking.BookingId);
+                        var selectedUpdatedBookings = await bookingApiClient.GetBookingByIdAsync(selectedBooking.BookingId);
                         FormEditBooking formEditBooking = new FormEditBooking(selectedUpdatedBookings);
                         if (formEditBooking.ShowDialog() == DialogResult.OK)
                         {
@@ -187,34 +196,39 @@ namespace HotelBookingSystem
 
                 if (!string.IsNullOrEmpty(currentSearchNic))
                 {
-                    updatedBookings = await apiClient.GetBookingsByNicAsync(currentSearchNic);
+                    updatedBookings = await bookingApiClient.GetBookingsByNicAsync(currentSearchNic);
                 }
                 else if (currentSearchBookingId.HasValue)
                 {
-                    var singleBooking = await apiClient.GetBookingByIdAsync(currentSearchBookingId.Value);
+                    var singleBooking = await bookingApiClient.GetBookingByIdAsync(currentSearchBookingId.Value);
                     if (singleBooking != null)
                         updatedBookings.Add(singleBooking);
                 }
 
+                // Check if no data was returned
+                if (updatedBookings == null || !updatedBookings.Any())
+                {
+                    DataGridViewBookings.DataSource = null;
+                    DataGridViewBookings.Visible = false; // or use .Enabled = false;
+                    this.Close();
+
+                    return;
+                }
+
                 // Convert to BookingViewModel list
-                var bookingViewModels = updatedBookings.Select(b => new BookingViewModel(b)).ToList();
+                var bookingViewModels = updatedBookings.Select(b => new BookingViewModel(b, guest)).ToList();
 
                 // Update the DataSource
-                DataGridViewBookings.DataSource = null; // Clear first to force refresh
+                DataGridViewBookings.Visible = true;
+                DataGridViewBookings.DataSource = null;
                 DataGridViewBookings.DataSource = bookingViewModels;
-
-                // Check if no bookings remain
-                if (!bookingViewModels.Any())
-                {
-                    MessageBox.Show("No more matching bookings found.",
-                                  "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error refreshing data: {ex.Message}", "Error",
-                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
     }
 }

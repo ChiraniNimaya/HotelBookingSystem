@@ -21,10 +21,10 @@ namespace HotelBookingSystem
 
         private void FormWeeklyView_Load(object sender, EventArgs e)
         {
-
+            Guest guest = new Guest();
             // Get bookings for the week and map to BookingViewModel
             var weeklyBookings = BookingManager.GetBookingsForWeek(targetDate)
-                                  .Select(b => new BookingViewModel(b))
+                                  .Select(b => new BookingViewModel(b, guest))
                                   .ToList();
 
             DataGridWeeklyView.DataSource = new BindingList<BookingViewModel>(weeklyBookings);

@@ -18,7 +18,6 @@ namespace HotelBookingSystem.DTOs
         public List<int>? RoomIds { get; set; }
         public float TotalPrice { get; set; }
 
-        public GuestDTO GuestDto { get; set; }
     }
 
 }

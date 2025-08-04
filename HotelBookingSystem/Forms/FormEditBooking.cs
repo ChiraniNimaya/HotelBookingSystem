@@ -15,7 +15,8 @@ namespace HotelBookingSystem
     public partial class FormEditBooking : Form
     {
         private Booking bookingToEdit;
-        private readonly BookingApiClient apiClient;
+        private readonly BookingApiClient bookingApiClient;
+        private readonly GuestApiClient guestApiClient;
         public FormEditBooking(Booking booking)
         {
             InitializeComponent();
@@ -23,15 +24,18 @@ namespace HotelBookingSystem
             DateTimePickerCheckin.MinDate = DateTime.Today;
         }
 
-        private void FormEditBooking_Load(object sender, EventArgs e)
+        private async void FormEditBooking_Load(object sender, EventArgs e)
         {
+            var guestApiClient = new GuestApiClient();
+            var selectedGuest = await guestApiClient.GetGuestByIdAsync(bookingToEdit.GuestId);
+
             // Guest details
-            TextBoxGuestName.Text = bookingToEdit.Guest.Name;
-            TextBoxNIC.Text = bookingToEdit.Guest.NIC;
-            TextBoxAddress.Text = bookingToEdit.Guest.Address;
-            TextBoxMobileNumber.Text = bookingToEdit.Guest.MobileNumber;
-            TextBoxEmail.Text = bookingToEdit.Guest.Email;
-            CheckBoxResident.Checked = bookingToEdit.Guest.IsResident;
+            TextBoxGuestName.Text = selectedGuest.Name;
+            TextBoxNIC.Text = selectedGuest.NIC;
+            TextBoxAddress.Text = selectedGuest.Address;
+            TextBoxMobileNumber.Text = selectedGuest.MobileNumber;
+            TextBoxEmail.Text = selectedGuest.Email;
+            CheckBoxResident.Checked = selectedGuest.IsResident;
 
             //Dates
             DateTimePickerCheckin.Value = bookingToEdit.CheckInDate;
@@ -105,6 +109,10 @@ namespace HotelBookingSystem
             guestDto.Email = TextBoxEmail.Text;
             guestDto.IsResident = CheckBoxResident.Checked;
 
+            var guestApiClient = new GuestApiClient();
+            int guestId = await guestApiClient.SubmitGuestAsync(guestDto);
+
+            var bookingApiClient = new BookingApiClient();
             BookingDTO newBookingDto = new BookingDTO();
             newBookingDto.BookingId = bookingToEdit.BookingId;
             newBookingDto.CheckInDate = DateTimePickerCheckin.Value;
@@ -117,16 +125,22 @@ namespace HotelBookingSystem
             bookingToEdit.RoomInfo.Clear();
             newBookingDto.RoomInfo = updatedRoomInfo;
 
-            newBookingDto.GuestDto = guestDto;
-
-            var apiClient = new BookingApiClient();
-            bool result = await apiClient.UpdateBookingAsync(bookingToEdit.BookingId, newBookingDto);
-            if (result)
+            if (guestId != 0)
             {
-                MessageBox.Show("Booking updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                newBookingDto.GuestId = guestId;
+                bool result = await bookingApiClient.UpdateBookingAsync(bookingToEdit.BookingId, newBookingDto);
+                if (result)
+                {
+                    MessageBox.Show("Booking updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
             }
+            else
+            {
+                MessageBox.Show("Error in storing guest information. Try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            
         }
     }
 }

@@ -45,7 +45,7 @@ namespace HotelBookingSystem
                 TextBoxSearchBookingId.Focus();
                 return;
             }
-
+            
             var booking = await apiClient.GetBookingByIdAsync(bookingId);
 
             if (booking != null)

@@ -36,16 +36,22 @@ namespace HotelBookingSystem
             public Dictionary<string, int> UnavailableRooms { get; set; }
         }
 
+        public class BookingDeleteResponse
+        {
+            public int GuestId { get; set; }
+        }
+
 
         public async Task<bool> SubmitBookingAsync(BookingDTO dto)
         {
+
             try
             {
                 var response = await _httpClient.PostAsJsonAsync("api/booking", dto);
 
                 if (response.IsSuccessStatusCode) // Success (200 OK)
                 {
-                    // Deserialize to BookingSuccessResponse instead of BookingDTO
+                    // Deserialize to BookingSuccessResponse
                     var success = await response.Content.ReadFromJsonAsync<BookingSuccessResponse>();
 
                     if (success == null)
@@ -76,8 +82,8 @@ namespace HotelBookingSystem
                         // Default success message
                         MessageBox.Show(
                             $"Booking created!\n\nBooking ID: {success.BookingId}\n" + 
-                            $"Total Price: {success.TotalPrice:C}" + 
-                            $"Rooms allocated : {success.RoomIds}",
+                            $"Total Price: {success.TotalPrice:C}\n" + 
+                            $"Room numbers allocated : {string.Join(", ", success.RoomIds)}",
                             "Success",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information
@@ -159,16 +165,25 @@ namespace HotelBookingSystem
         }
 
         // Delete selected booking 
-        public async Task<bool> DeleteBookingAsync(int bookingId)
+        public async Task<int> DeleteBookingAsync(int bookingId)
         {
             try
             {
                 var response = await _httpClient.DeleteAsync($"api/booking/{bookingId}");
-                return response.IsSuccessStatusCode; 
+                // Deserialize to BookingSuccessResponse
+                var success = await response.Content.ReadFromJsonAsync<BookingDeleteResponse>();
+
+                if (success.GuestId != 0)
+                {
+                    return success.GuestId;
+                }
+                return 0;
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
-                return false;
+                MessageBox.Show($"An error occurred: {ex.Message}",
+                                "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 0;
             }
         }
 

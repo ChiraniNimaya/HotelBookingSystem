@@ -24,15 +24,15 @@ namespace HotelBookingSystem
 
         public string RoomSummary => string.Join(", ", RoomInfo.Select(r => $"{r.Key} x{r.Value}"));
 
-        public BookingViewModel(Booking booking)
+        public BookingViewModel(Booking booking, Guest guest)
         {
             BookingId = booking.BookingId;
-            GuestName = booking.Guest.Name;
-            NIC = booking.Guest.NIC;
-            Address = booking.Guest.Address;
-            MobileNumber = booking.Guest.MobileNumber;
-            Email = booking.Guest.Email;
-            IsResident = booking.Guest.IsResident;
+            GuestName = guest.Name;
+            NIC = guest.NIC;
+            Address = guest.Address;
+            MobileNumber = guest.MobileNumber;
+            Email = guest.Email;
+            IsResident = guest.IsResident;
             CheckInDate = booking.CheckInDate;
             CheckOutDate = booking.CheckOutDate;
             RoomInfo = booking.RoomInfo;

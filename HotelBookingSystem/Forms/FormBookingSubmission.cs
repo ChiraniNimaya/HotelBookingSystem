@@ -178,10 +178,19 @@ namespace HotelBookingSystem
             guestDto.Email = guest.Email;
             guestDto.IsResident = guest.IsResident;
 
-            newBookingDto.GuestDto = guestDto;
+            var guestApiClient = new GuestApiClient();
+            int guestId = await guestApiClient.SubmitGuestAsync(guestDto);
 
-            var apiClient = new BookingApiClient();
-            bool result = await apiClient.SubmitBookingAsync(newBookingDto);
+            var bookingApiClient = new BookingApiClient();
+            if (guestId != 0)
+            {
+                newBookingDto.GuestId = guestId;
+                bool bookingResult = await bookingApiClient.SubmitBookingAsync(newBookingDto); // Error handled in SubmitBookingAsync
+            }
+            else
+            {
+                MessageBox.Show("Error in storing guest information. Try again.","Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
 
             this.Close();
         }
