@@ -186,6 +186,9 @@ namespace HotelBookingSystem
             {
                 newBookingDto.GuestId = guestId;
                 bool bookingResult = await bookingApiClient.SubmitBookingAsync(newBookingDto); // Error handled in SubmitBookingAsync
+                if (bookingResult)
+                {
+                }
             }
             else
             {
