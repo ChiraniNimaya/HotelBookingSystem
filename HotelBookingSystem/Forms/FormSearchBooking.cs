@@ -12,11 +12,11 @@ namespace HotelBookingSystem
 {
     public partial class FormSearchBooking : Form
     {
-        private readonly BookingApiClient apiClient;
+        private readonly BookingApiClient bookingApiClient;
         public FormSearchBooking()
         {
             InitializeComponent();
-            apiClient = new BookingApiClient();
+            bookingApiClient = new BookingApiClient();
 
 
         }
@@ -46,7 +46,7 @@ namespace HotelBookingSystem
                 return;
             }
             
-            var booking = await apiClient.GetBookingByIdAsync(bookingId);
+            var booking = await bookingApiClient.GetBookingByIdAsync(bookingId);
 
             if (booking != null)
             {
@@ -63,7 +63,7 @@ namespace HotelBookingSystem
         {
             string nic = TextBoxSearchNIC.Text.Trim();
 
-            var bookings = await apiClient.GetBookingsByNicAsync(nic);
+            var bookings = await bookingApiClient.GetBookingsByNicAsync(nic);
 
             if (bookings != null && bookings.Any())
             {

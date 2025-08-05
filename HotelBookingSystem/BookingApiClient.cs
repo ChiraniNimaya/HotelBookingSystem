@@ -152,7 +152,7 @@ namespace HotelBookingSystem
         }
 
         // Get bookings by Week
-        public async Task<List<Booking>> GetBookingsByWeekAsync(DateTime date)
+        public async Task<List<Booking>> GetBookingsByWeekAsync(string date) //yyyy-MM-DD format
         {
             try
             {
