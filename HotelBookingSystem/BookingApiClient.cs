@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Azure;
+using HotelBooking.API.Models;
+using HotelBookingSystem.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HotelBookingSystem.DTOs;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HotelBookingSystem
 {
@@ -21,7 +24,19 @@ namespace HotelBookingSystem
             };
         }
 
-        public class BookingSuccessResponse
+        public class ApiResponse<T>
+        {
+            public string Status { get; set; }
+            public string Message { get; set; }
+            public T Data { get; set; }
+        }
+
+        public class BookingPostErrorResponse
+        {
+            public Dictionary<string, int> UnavailableRooms { get; set; }
+        }
+
+        public class BookingPostSuccessResponse
         {
             public int BookingId { get; set; }
             public float TotalPrice { get; set; }
@@ -30,10 +45,16 @@ namespace HotelBookingSystem
             public List<string> FailedMonths { get; set; }
         }
 
-        public class BookingErrorResponse
+        public class BookingGetSuccessResponse
         {
-            public string Message { get; set; }
-            public Dictionary<string, int> UnavailableRooms { get; set; }
+            public Booking Booking { get; set; }
+            
+        }
+
+        public class BookingsGetSuccessResponse
+        {
+            public List<Booking> Bookings { get; set; }
+
         }
 
         public class BookingDeleteResponse
@@ -49,12 +70,14 @@ namespace HotelBookingSystem
             {
                 var response = await _httpClient.PostAsJsonAsync("api/booking", dto);
 
+                // Deserialize to BookingSuccessResponse
+               
+
                 if (response.IsSuccessStatusCode) // Success (200 OK)
                 {
-                    // Deserialize to BookingSuccessResponse
-                    var success = await response.Content.ReadFromJsonAsync<BookingSuccessResponse>();
+                    var result = await response.Content.ReadFromJsonAsync<ApiResponse<BookingPostSuccessResponse>>();
 
-                    if (success == null)
+                    if (result == null)
                     {
                         MessageBox.Show("Booking succeeded but no details were returned.",
                                         "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -62,15 +85,15 @@ namespace HotelBookingSystem
                     }
 
                     // Check if there are failed months
-                    if (success.FailedMonths != null && success.FailedMonths.Any())
+                    if (result.Data.FailedMonths != null && result.Data.FailedMonths.Any())
                     {
                         // Format month names into a nice string
-                        string failedMonthsList = string.Join(", ", success.FailedMonths);
+                        string failedMonthsList = string.Join(", ", result.Data.FailedMonths);
 
                         MessageBox.Show(
                             $"Booking created, but some recurring months could not be booked.\n\n" +
-                            $"Booking ID: {success.BookingId}\n" +
-                            $"Total Price: {success.TotalPrice:C}\n\n" +
+                            $"Booking ID: {result.Data.BookingId}\n" +
+                            $"Total Price: {result.Data.TotalPrice:C}\n\n" +
                             $"Failed Months: {failedMonthsList}",
                             "Partial Success",
                             MessageBoxButtons.OK,
@@ -81,9 +104,9 @@ namespace HotelBookingSystem
                     {
                         // Default success message
                         MessageBox.Show(
-                            $"Booking created!\n\nBooking ID: {success.BookingId}\n" + 
-                            $"Total Price: {success.TotalPrice:C}\n" + 
-                            $"Room numbers allocated : {string.Join(", ", success.RoomIds)}",
+                            $"Booking created!\n\nBooking ID: {result.Data.BookingId}\n" + 
+                            $"Total Price: {result.Data.TotalPrice:C}\n" + 
+                            $"Room numbers allocated : {string.Join(", ", result.Data.RoomIds)}",
                             "Success",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information
@@ -92,17 +115,17 @@ namespace HotelBookingSystem
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) // Rooms unavailable
                 {
-                    var errorContent = await response.Content.ReadFromJsonAsync<BookingErrorResponse>();
+                    var result = await response.Content.ReadFromJsonAsync<ApiResponse<BookingPostErrorResponse>>();
 
-                    if (errorContent == null)
+                    if (result.Status == null)
                     {
                         MessageBox.Show("Booking failed but server didn't return an error message.",
                                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
                     }
 
-                    string msg = $"{errorContent.Message}\n\n";
-                    foreach (var kvp in errorContent.UnavailableRooms)
+                    string msg = $"{result.Message} \n\n";
+                    foreach (var kvp in result.Data.UnavailableRooms)
                     {
                         msg += $"{kvp.Key}: {kvp.Value} not available\n";
                     }
@@ -130,7 +153,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<Booking>($"api/booking/{bookingId}");
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<BookingGetSuccessResponse>>($"api/booking/{bookingId}");
+                return result.Data.Booking;
             }
             catch (HttpRequestException)
             {
@@ -143,7 +167,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<Booking>>($"api/booking/nic/{nic}");
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<BookingsGetSuccessResponse>>($"api/booking/nic/{nic}");
+                return result.Data.Bookings;
             }
             catch (HttpRequestException)
             {
@@ -156,7 +181,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<Booking>>($"api/booking/week/{date}");
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<BookingsGetSuccessResponse>>($"api/booking/week/{date}");
+                return result.Data.Bookings;
             }
             catch (HttpRequestException)
             {
@@ -171,11 +197,11 @@ namespace HotelBookingSystem
             {
                 var response = await _httpClient.DeleteAsync($"api/booking/{bookingId}");
                 // Deserialize to BookingSuccessResponse
-                var success = await response.Content.ReadFromJsonAsync<BookingDeleteResponse>();
+                var result = await response.Content.ReadFromJsonAsync <ApiResponse<BookingDeleteResponse>>();
 
-                if (success.GuestId != 0)
+                if (result.Data.GuestId != 0)
                 {
-                    return success.GuestId;
+                    return result.Data.GuestId;
                 }
                 return 0;
             }
@@ -198,9 +224,9 @@ namespace HotelBookingSystem
                 if (response.IsSuccessStatusCode) // Success (200 OK)
                 {
                     // Deserialize to BookingSuccessResponse
-                    var success = await response.Content.ReadFromJsonAsync<BookingSuccessResponse>();
+                    var result = await response.Content.ReadFromJsonAsync<ApiResponse<BookingPostSuccessResponse>>();
 
-                    if (success == null)
+                    if (result == null)
                     {
                         MessageBox.Show("Booking updated successfully, but no details were returned.",
                                         "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -209,28 +235,28 @@ namespace HotelBookingSystem
 
                     // Standard success message
                     MessageBox.Show(
-                        $"Booking updated!\n\nBooking ID: {success.BookingId}\n" +
-                        $"Total Price: {success.TotalPrice:C}\n" +
-                        $"Rooms allocated: {string.Join(", ", success.RoomIds)}",
+                        $"Booking updated!\n\nBooking ID: {result.Data.BookingId}\n" +
+                        $"Total Price: {result.Data.TotalPrice:C}\n" +
+                        $"Rooms allocated: {string.Join(", ", result.Data.RoomIds)}",
                         "Success",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
                     );
-                    
+
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) // Rooms unavailable
                 {
-                    var errorContent = await response.Content.ReadFromJsonAsync<BookingErrorResponse>();
+                    var result = await response.Content.ReadFromJsonAsync<ApiResponse<BookingPostErrorResponse>>();
 
-                    if (errorContent == null)
+                    if (result.Status == null)
                     {
                         MessageBox.Show("Booking update failed but server didn't return an error message.",
                                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
                     }
 
-                    string msg = $"{errorContent.Message}\n\n";
-                    foreach (var kvp in errorContent.UnavailableRooms)
+                    string msg = $"{result.Message} \n\n";
+                    foreach (var kvp in result.Data.UnavailableRooms)
                     {
                         msg += $"{kvp.Key}: {kvp.Value} not available\n";
                     }
@@ -247,14 +273,12 @@ namespace HotelBookingSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}",
+                MessageBox.Show($"An error occurred while updating booking : {ex.Message}",
                                 "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
-
-
-
+        
 
     }
 

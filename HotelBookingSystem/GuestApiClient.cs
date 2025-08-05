@@ -1,4 +1,5 @@
-﻿using HotelBookingSystem.DTOs;
+﻿using HotelBooking.API.Models;
+using HotelBookingSystem.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,15 @@ namespace HotelBookingSystem
             };
         }
 
-        public class GuestSuccessResponse
+        public class GuestPostSuccessResponse
         {
             public int GuestId { get; set; }
+        }
+
+        public class GuestGetSuccessResponse
+        {
+            public Guest Guest { get; set; }
+
         }
 
         public async Task<int> SubmitGuestAsync(GuestDTO dto)
@@ -35,10 +42,17 @@ namespace HotelBookingSystem
                 if (response.IsSuccessStatusCode) // Success (200 OK)
                 {
                     // Deserialize to GuestSuccessResponse 
-                    var success = await response.Content.ReadFromJsonAsync<GuestSuccessResponse>();
-                    return success.GuestId;
+                    var result = await response.Content.ReadFromJsonAsync<ApiResponse<GuestPostSuccessResponse>>();
+                    if (result.Data.GuestId != 0)
+                        return result.Data.GuestId;
+                    MessageBox.Show($"An error occurred: {result.Message}",
+                                "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return 0;
                 }
-                else {  return 0; }
+                else 
+                {  
+                    return 0; 
+                }
             }
             catch (Exception ex)
             {
@@ -53,7 +67,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<Guest>($"api/guest/{guestId}");
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<GuestGetSuccessResponse>>($"api/guest/{guestId}");
+                return result.Data.Guest;
             }
             catch (HttpRequestException)
             {
@@ -66,7 +81,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<Guest>($"api/guest/nic/{nic}");
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<GuestGetSuccessResponse>>($"api/guest/nic/{nic}");
+                return result.Data.Guest;
             }
             catch (HttpRequestException)
             {

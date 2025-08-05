@@ -124,7 +124,7 @@ namespace HotelBookingSystem
 
         private void CheckBoxRecurring_CheckedChanged(object sender, EventArgs e)
         {
-            isRecurring = true;
+            isRecurring = CheckBoxRecurring.Checked; ;
             EnableSubmission();
         }
         private void NumericUpDownStandard_ValueChanged(object sender, EventArgs e)
