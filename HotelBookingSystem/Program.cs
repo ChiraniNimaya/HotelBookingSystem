@@ -15,6 +15,8 @@ namespace HotelBookingSystem
             ApplicationConfiguration.Initialize();
             Application.Run(new FormBookingService());
         }
+
+
     }
 }
 

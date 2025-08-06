@@ -46,8 +46,7 @@ namespace HotelBookingSystem
                 return;
             }
             
-            var booking = await bookingApiClient.GetBookingByIdAsync(bookingId);
-
+            Booking booking = await bookingApiClient.GetBookingByIdAsync(bookingId);
             if (booking != null)
             {
                 FormSearchView formSearchView = new FormSearchView(booking, bookingId);

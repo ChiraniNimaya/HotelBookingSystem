@@ -45,18 +45,6 @@ namespace HotelBookingSystem
             public List<string> FailedMonths { get; set; }
         }
 
-        public class BookingGetSuccessResponse
-        {
-            public Booking Booking { get; set; }
-            
-        }
-
-        public class BookingsGetSuccessResponse
-        {
-            public List<Booking> Bookings { get; set; }
-
-        }
-
         public class BookingDeleteResponse
         {
             public int GuestId { get; set; }
@@ -153,8 +141,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<ApiResponse<BookingGetSuccessResponse>>($"api/booking/{bookingId}");
-                return result.Data.Booking;
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<Booking>>($"api/booking/{bookingId}");
+                return result.Data;
             }
             catch (HttpRequestException)
             {
@@ -167,8 +155,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<ApiResponse<BookingsGetSuccessResponse>>($"api/booking/nic/{nic}");
-                return result.Data.Bookings;
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<List<Booking>>>($"api/booking/nic/{nic}");
+                return result.Data;
             }
             catch (HttpRequestException)
             {
@@ -181,8 +169,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<ApiResponse<BookingsGetSuccessResponse>>($"api/booking/week/{date}");
-                return result.Data.Bookings;
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<List<Booking>>>($"api/booking/week/{date}");
+                return result.Data;
             }
             catch (HttpRequestException)
             {

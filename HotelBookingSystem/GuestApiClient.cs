@@ -67,8 +67,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<ApiResponse<GuestGetSuccessResponse>>($"api/guest/{guestId}");
-                return result.Data.Guest;
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<Guest>>($"api/guest/{guestId}");
+                return result.Data;
             }
             catch (HttpRequestException)
             {
@@ -81,8 +81,8 @@ namespace HotelBookingSystem
         {
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<ApiResponse<GuestGetSuccessResponse>>($"api/guest/nic/{nic}");
-                return result.Data.Guest;
+                var result = await _httpClient.GetFromJsonAsync<ApiResponse<Guest>>($"api/guest/nic/{nic}");
+                return result.Data;
             }
             catch (HttpRequestException)
             {

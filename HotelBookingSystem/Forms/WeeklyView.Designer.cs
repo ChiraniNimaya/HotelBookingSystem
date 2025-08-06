@@ -43,14 +43,14 @@
             DataGridWeeklyView.Location = new Point(0, 0);
             DataGridWeeklyView.Name = "DataGridWeeklyView";
             DataGridWeeklyView.RowHeadersWidth = 51;
-            DataGridWeeklyView.Size = new Size(1507, 519);
+            DataGridWeeklyView.Size = new Size(1716, 519);
             DataGridWeeklyView.TabIndex = 0;
             // 
             // FormWeeklyView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1507, 519);
+            ClientSize = new Size(1716, 519);
             Controls.Add(DataGridWeeklyView);
             Name = "FormWeeklyView";
             Text = "Weekly View";
