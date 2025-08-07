@@ -19,6 +19,7 @@ namespace HotelBookingSystem
         public DateTime CheckOutDate { get; set; }
         public Dictionary<RoomType, int> RoomInfo { get; set; } = new Dictionary<RoomType, int>();
         public bool IsRecurring { get; set; }
+        public string IsRecurringText => IsRecurring ? "Yes" : "No";
         public string SpecialRequests { get; set; }
         public float TotalPrice { get; set; }
 

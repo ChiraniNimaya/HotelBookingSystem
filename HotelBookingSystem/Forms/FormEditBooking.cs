@@ -119,7 +119,12 @@ namespace HotelBookingSystem
             newBookingDto.CheckOutDate = DateTimePickerCheckout.Value;
             newBookingDto.IsRecurring = bookingToEdit.IsRecurring;
 
-            string specialRequests = string.Join(", ", TextBoxSpecialRequests.Text.Split('\n'));
+            string specialRequests = string.Join(", ",
+                                            TextBoxSpecialRequests.Text
+                                                .Split('\n')
+                                                .Select(line => line.Trim())
+                                                .Where(line => !string.IsNullOrEmpty(line))
+                                                    );
             newBookingDto.SpecialRequests = specialRequests;
 
             bookingToEdit.RoomInfo.Clear();

@@ -160,7 +160,14 @@ namespace HotelBookingSystem
             if (selectedFamily > 0)
                 roomInfo.Add(RoomType.Family, selectedFamily);
 
-            string specialRequests = string.Join(", ", ListBoxSpecialRequests.Text.Split('\n'));
+            string specialRequests = string.Join(", ",
+                                                ListBoxSpecialRequests.Text
+                                                    .Split('\n')
+                                                    .Select(line => line.Trim())
+                                                    .Where(line => !string.IsNullOrEmpty(line))
+                                            );
+
+
 
             BookingDTO newBookingDto = new BookingDTO();
             newBookingDto.CheckInDate = checkInDate;

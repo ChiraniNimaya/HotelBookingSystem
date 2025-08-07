@@ -32,6 +32,13 @@ namespace HotelBookingSystem
                 // Get bookings for the target week
                 var bookings = await bookingApiClient.GetBookingsByWeekAsync(formattedDate);
 
+                if (bookings == null)
+                {
+                    MessageBox.Show("No bookings for the requested week.", "No Bookings", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                    return;
+                }
+
                 // Prepare a list of BookingViewModels
                 var weeklyBookings = new List<BookingViewModel>();
 
@@ -48,20 +55,67 @@ namespace HotelBookingSystem
                     }
                 }
 
-                // Bind to DataGridView
+                // Prevent auto-generating all columns
+                DataGridWeeklyView.AutoGenerateColumns = false;
+
+                // Clear existing columns
+                DataGridWeeklyView.Columns.Clear();
+
+                // Manually define only the columns you want
+                DataGridWeeklyView.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "BookingId",
+                    HeaderText = "Booking ID"
+                });
+                DataGridWeeklyView.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "GuestName",
+                    HeaderText = "Guest Name"
+                });
+                DataGridWeeklyView.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "NIC",
+                    HeaderText = "NIC No."
+                });
+                DataGridWeeklyView.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "CheckInDate",
+                    HeaderText = "Check-In Date"
+                });
+                DataGridWeeklyView.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "CheckOutDate",
+                    HeaderText = "Check-Out Date"
+                });
+                DataGridWeeklyView.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "RoomSummary",
+                    HeaderText = "Room(s)"
+                });
+                DataGridWeeklyView.Columns.Add(new DataGridViewCheckBoxColumn
+                {
+                    DataPropertyName = "IsResident",
+                    HeaderText = "Is Resident?"
+                });
+                DataGridWeeklyView.Columns.Add(new DataGridViewCheckBoxColumn
+                {
+                    DataPropertyName = "IsRecurring",
+                    HeaderText = "Recurring stay?"
+                });
+                DataGridWeeklyView.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "SpecialRequests",
+                    HeaderText = "Special Requests"
+                });
+                DataGridWeeklyView.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "TotalPrice",
+                    HeaderText = "Total Price (LKR)"
+                });
+
+                // Now bind the data
                 DataGridWeeklyView.DataSource = new BindingList<BookingViewModel>(weeklyBookings);
 
-                // Set column headers
-                DataGridWeeklyView.Columns["BookingId"].HeaderText = "Booking ID";
-                DataGridWeeklyView.Columns["GuestName"].HeaderText = "Guest Name";
-                DataGridWeeklyView.Columns["NIC"].HeaderText = "NIC No.";
-                DataGridWeeklyView.Columns["CheckInDate"].HeaderText = "Check-In Date";
-                DataGridWeeklyView.Columns["CheckOutDate"].HeaderText = "Check-Out Date";
-                DataGridWeeklyView.Columns["RoomSummary"].HeaderText = "Room(s)";
-                DataGridWeeklyView.Columns["IsResident"].HeaderText = "Is Resident?";
-                DataGridWeeklyView.Columns["IsRecurring"].HeaderText = "Recurring stay?";
-                DataGridWeeklyView.Columns["SpecialRequests"].HeaderText = "Special Requests";
-                DataGridWeeklyView.Columns["TotalPrice"].HeaderText = "Total Price (LKR)";
             }
             catch (Exception ex)
             {

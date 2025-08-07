@@ -70,7 +70,7 @@ namespace HotelBookingSystem
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Check-In Date", DataPropertyName = "CheckInDate" });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Check-Out Date", DataPropertyName = "CheckOutDate" });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Room(s)", DataPropertyName = "RoomSummary", Width = 250, DefaultCellStyle = new DataGridViewCellStyle { WrapMode = DataGridViewTriState.True } });
-            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Recurring Stay?", DataPropertyName = "IsRecurring" });
+            DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Recurring Stay?", DataPropertyName = "IsRecurringText" });
             DataGridViewBookings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Special Requests", DataPropertyName = "SpecialRequests", Width = 375, DefaultCellStyle = new DataGridViewCellStyle { WrapMode = DataGridViewTriState.True } });
 
 
