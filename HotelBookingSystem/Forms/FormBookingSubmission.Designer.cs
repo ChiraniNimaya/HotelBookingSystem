@@ -407,7 +407,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1836, 668);
+            ClientSize = new Size(1836, 706);
             Controls.Add(GroupBoxBooking);
             Controls.Add(GroupBoxGuest);
             Controls.Add(ButtonSubmit);
