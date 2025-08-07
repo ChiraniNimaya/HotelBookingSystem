@@ -27,12 +27,6 @@ namespace HotelBookingSystem
             public int GuestId { get; set; }
         }
 
-        public class GuestGetSuccessResponse
-        {
-            public Guest Guest { get; set; }
-
-        }
-
         public async Task<int> SubmitGuestAsync(GuestDTO dto)
         {
             try
