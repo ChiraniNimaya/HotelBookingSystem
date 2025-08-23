@@ -216,8 +216,14 @@ namespace HotelBookingSystem
                     return;
                 }
 
-                // Convert to BookingViewModel list
-                var bookingViewModels = updatedBookings.Select(b => new BookingViewModel(b, guest)).ToList();
+               
+                // Re-fetch guest(s) fresh from API and Convert to BookingViewModel list
+                var bookingViewModels = new List<BookingViewModel>();
+                foreach (var b in updatedBookings)
+                {
+                    var freshGuest = await guestApiClient.GetGuestByIdAsync(b.GuestId);
+                    bookingViewModels.Add(new BookingViewModel(b, freshGuest));
+                }
 
                 // Update the DataSource
                 DataGridViewBookings.Visible = true;
