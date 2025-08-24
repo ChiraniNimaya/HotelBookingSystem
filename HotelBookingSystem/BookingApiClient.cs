@@ -103,8 +103,9 @@ namespace HotelBookingSystem
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) // Rooms unavailable
                 {
+                    
                     var result = await response.Content.ReadFromJsonAsync<ApiResponse<BookingPostErrorResponse>>();
-
+                    
                     if (result.Status == null)
                     {
                         MessageBox.Show("Booking failed but server didn't return an error message.",
@@ -113,9 +114,18 @@ namespace HotelBookingSystem
                     }
 
                     string msg = $"{result.Message} \n\n";
-                    foreach (var kvp in result.Data.UnavailableRooms)
+                    if (result.Data?.UnavailableRooms != null && result.Data.UnavailableRooms.Any())
                     {
-                        msg += $"{kvp.Key}: {kvp.Value} not available\n";
+                        foreach (var kvp in result.Data.UnavailableRooms)
+                        {
+                            msg += $"{kvp.Key}: {kvp.Value} not available\n";
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Booking failed, Some rooms are unavailable for the entered time period.",
+                                        "Booking Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
                     }
 
                     MessageBox.Show(msg, "Booking Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
